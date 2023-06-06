@@ -1,0 +1,11 @@
+{
+  "Group": "Product provider",
+  "FriendlyName": "Infigo Product Provider Plugin",
+  "SystemName": "ProductProvider.Infigo",
+  "Version": "4.70.1",
+  "SupportedVersions": [ "4.70" ],
+  "Author": "Dumitras",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.ProductProvider.Infigo.dll",
+  "Description": "This plugin allows to sync products from a provider"
+}
