@@ -1,0 +1,13 @@
+@model Nop.Plugin.ProductProvider.Infigo.Models.ConfigurationModel
+
+@{
+    Layout = "_ConfigurePlugin";
+}
+
+<form asp-controller="ProductProviderInfigo" asp-action="Configure" method="get">
+    <div class="content">
+            <div class="form-horizontal">
+                @Model.Name
+            </div>
+        </div>
+</form>
