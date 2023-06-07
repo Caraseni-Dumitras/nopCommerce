@@ -1,13 +1,21 @@
-@model Nop.Plugin.ProductProvider.Infigo.Models.ConfigurationModel
+@model ConfigurationModel
+
+@using Nop.Plugin.ProductProvider.Infigo.Models
 
 @{
     Layout = "_ConfigurePlugin";
 }
 
-<form asp-controller="ProductProviderInfigo" asp-action="Configure" method="get">
-    <div class="content">
-            <div class="form-horizontal">
-                @Model.Name
-            </div>
+<div class="card">
+    <div class="card-body">
+        <div class="card-text">
+            <form asp-controller="ProductProviderInfigo" asp-action="Configure" method="post">
+                <div class="form-group">
+                    <nop-label asp-for="ExternalApiUrl"/>
+                    <input name="ExternalApiUrl" type="text" asp-for="ExternalApiUrl" placeholder="Insert Api Url" class="form-control">
+                </div>
+                <button class="btn btn-primary" type="submit">Save</button>
+            </form>
         </div>
-</form>
+    </div>
+</div>

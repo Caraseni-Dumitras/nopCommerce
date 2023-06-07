@@ -1,9 +1,9 @@
-using Nop.Web.Framework.Models;
+using Nop.Web.Framework.Mvc.ModelBinding;
 
 namespace Nop.Plugin.ProductProvider.Infigo.Models;
 
-public record ConfigurationModel : BaseNopModel
+public record ConfigurationModel
 {
-    public int    Id   { get; set; }
-    public string Name { get; set; }
+    [NopResourceDisplayName("Plugins.ProductProvider.Infigo.ExternalApiUrl")]
+    public string ExternalApiUrl { get; set; }
 }
