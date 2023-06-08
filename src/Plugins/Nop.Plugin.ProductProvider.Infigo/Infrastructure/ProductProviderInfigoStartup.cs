@@ -11,6 +11,8 @@ public class ProductProviderInfigoStartup : INopStartup
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient<ProductProviderInfigoHttpClient>();
+
+        services.AddScoped<IProductProviderInfigoService, ProductProviderInfigoService>();
     }
         
     public void Configure(IApplicationBuilder application)
