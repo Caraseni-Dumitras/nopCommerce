@@ -11,8 +11,8 @@
         <div class="card-text">
             <form asp-controller="ProductProviderInfigo" asp-action="Configure" method="post">
                 <div class="form-group">
+                    <input name="ExternalApiUrl" type="text" value="@Model.ExternalApiUrl" asp-for="ExternalApiUrl" placeholder="Insert Api Url" class="form-control">
                     <nop-label asp-for="ExternalApiUrl"/>
-                    <input name="ExternalApiUrl" type="text" asp-for="ExternalApiUrl" placeholder="Insert Api Url" class="form-control">
                 </div>
                 <button class="btn btn-primary" type="submit">Save</button>
             </form>
