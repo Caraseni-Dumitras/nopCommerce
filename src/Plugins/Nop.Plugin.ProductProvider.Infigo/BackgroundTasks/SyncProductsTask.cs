@@ -8,15 +8,18 @@ public class SyncProductsTask : IScheduleTask
 {
     private readonly ProductProviderInfigoHttpClient _httpClient;
     private readonly IScheduleTaskService            _scheduleTaskService;
+    private readonly IProductProviderInfigoService   _productProviderInfigoService;
     
-    public SyncProductsTask(ProductProviderInfigoHttpClient storeHttpClient, IScheduleTaskService scheduleTaskService)
+    public SyncProductsTask(ProductProviderInfigoHttpClient storeHttpClient, IScheduleTaskService scheduleTaskService, 
+                            IProductProviderInfigoService productProviderInfigoService)
     {
-        _httpClient          = storeHttpClient;
-        _scheduleTaskService = scheduleTaskService;
+        _httpClient                        = storeHttpClient;
+        _scheduleTaskService               = scheduleTaskService;
+        _productProviderInfigoService      = productProviderInfigoService;
     }
     
     public async Task ExecuteAsync()
     {
-        await _httpClient.RequestAsync();
+        await _productProviderInfigoService.GetAllProducts();
     }
 }

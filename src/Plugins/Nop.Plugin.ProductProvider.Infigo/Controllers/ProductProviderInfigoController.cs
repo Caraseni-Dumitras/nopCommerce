@@ -25,7 +25,11 @@ public class ProductProviderInfigoController : BasePluginController
         
         var model = new ConfigurationModel()
         {
-            ExternalApiUrl = apiSettings.ExternalApiUrl
+            BaseApiUrl = apiSettings.BaseApiUrl,
+            ApiType = apiSettings.ApiType,
+            ApiKey = apiSettings.ApiKey,
+            GetAllProductsUrl = apiSettings.GetAllProductsUrl,
+            GetProductByIdUrl = apiSettings.GetProductByIdUrl
         };
         
         return View("~/Plugins/ProductProvider.Infigo/Views/Configure.cshtml", model);
@@ -36,7 +40,11 @@ public class ProductProviderInfigoController : BasePluginController
     {
         var apiSettings = new ProductProviderInfigoSettings()
         {
-            ExternalApiUrl = model.ExternalApiUrl
+            BaseApiUrl        = model.BaseApiUrl,
+            ApiType           = model.ApiType,
+            ApiKey            = model.ApiKey,
+            GetAllProductsUrl = model.GetAllProductsUrl,
+            GetProductByIdUrl = model.GetProductByIdUrl
         };
 
         await _settingService.SaveSettingAsync(apiSettings);

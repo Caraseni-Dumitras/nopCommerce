@@ -12,15 +12,55 @@
         <div class="card-body">
             <div class="card-text">
                 <p>
-                    1. Insert the external api url to sync all provider's products.
+                    1. Api's type represents the api's authorization scheme type.<br>
+                    2. Api's key represents the api's authorization key value.<br>
+                    3. Base Api Url represents the api's basic Url.<br>
+                    4. Get all products Url represents the api's GetAllProducts request Url.<br>
+                    5. Get product by id Url represents the api's GetProductByIdUrl request Url.<br>
                 </p>
                 <div class="form-group row">
                     <div class="col-md-1">
-                        <p class="font-weight-bold">External Api Url</p>
+                        <p class="font-weight-bold">Api Type</p>
                     </div>
                     <div class="col-md-11">
-                        <input name="ExternalApiUrl" type="text" value="@Model.ExternalApiUrl" asp-for="ExternalApiUrl" placeholder="Insert Api Url" class="form-control">
-                                                <nop-label asp-for="ExternalApiUrl"/>
+                        <input name="ApiType" type="text" value="@Model.ApiType" asp-for="ApiType" placeholder="Insert Api Type" class="form-control">
+                        <nop-label asp-for="ApiType"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <p class="font-weight-bold">Api Key</p>
+                    </div>
+                    <div class="col-md-11">
+                        <input name="ApiKey" type="text" value="@Model.ApiKey" asp-for="ApiKey" placeholder="Insert Api Key" class="form-control">
+                        <nop-label asp-for="ApiKey"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <p class="font-weight-bold">Base Api Url</p>
+                    </div>
+                    <div class="col-md-11">
+                        <input name="BaseApiUrl" type="text" value="@Model.BaseApiUrl" asp-for="BaseApiUrl" placeholder="Insert Base Api Url" class="form-control">
+                        <nop-label asp-for="BaseApiUrl"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <p class="font-weight-bold">Get All Products</p>
+                    </div>
+                    <div class="col-md-11">
+                        <input name="GetAllProductsUrl" type="text" value="@Model.GetAllProductsUrl" asp-for="GetAllProductsUrl" placeholder="Insert Get All Products Url" class="form-control">
+                        <nop-label asp-for="GetAllProductsUrl"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <p class="font-weight-bold">Get Product</p>
+                    </div>
+                    <div class="col-md-11">
+                        <input name="GetProductByIdUrl" type="text" value="@Model.GetProductByIdUrl" asp-for="GetProductByIdUrl" placeholder="Insert Get Product By Id Url" class="form-control">
+                        <nop-label asp-for="GetProductByIdUrl"/>
                     </div>
                 </div>
                 <div class="form-group row">
