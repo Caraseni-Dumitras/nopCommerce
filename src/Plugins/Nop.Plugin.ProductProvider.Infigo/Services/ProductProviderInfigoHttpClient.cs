@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Nop.Plugin.ProductProvider.Infigo.Services;
 
@@ -9,5 +10,9 @@ public class ProductProviderInfigoHttpClient
     public ProductProviderInfigoHttpClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
+    }
+
+    public async Task RequestAsync()
+    {
     }
 }
