@@ -64,16 +64,6 @@
     <Content Update="**\*.config;**\*.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Plugins\ProductProvider.Infigo\Views\Configure.cshtml" />
-    <_ContentIncludedByDefault Remove="Plugins\ProductProvider.Infigo\Views\_ViewImpoerts.cshtml" />
-    <_ContentIncludedByDefault Remove="Plugins\ProductProvider.Infigo\Nop.Web.deps.json" />
-    <_ContentIncludedByDefault Remove="Plugins\ProductProvider.Infigo\Nop.Web.runtimeconfig.dev.json" />
-    <_ContentIncludedByDefault Remove="Plugins\ProductProvider.Infigo\Nop.Web.runtimeconfig.json" />
-    <_ContentIncludedByDefault Remove="Plugins\ProductProvider.Infigo\Nop.Web.staticwebassets.runtime.json" />
-    <_ContentIncludedByDefault Remove="Plugins\ProductProvider.Infigo\plugin.json" />
-  </ItemGroup>
-
   <!-- This target execute after "Build" target.
     We use it to clean up folder with plugins from unnecessary and obsolete libraries. -->
   <Target Name="NopTarget" AfterTargets="Build">
