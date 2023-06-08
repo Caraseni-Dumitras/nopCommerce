@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Nop.Core;
@@ -5,6 +6,7 @@ using Nop.Services.Common;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Plugins;
+using Nop.Services.ScheduleTasks;
 
 namespace Nop.Plugin.ProductProvider.Infigo;
 
@@ -13,12 +15,15 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
     protected readonly IWebHelper           _webHelper;
     private readonly   ISettingService      _settingService;
     private readonly   ILocalizationService _localizationService;
+    private readonly   IScheduleTaskService        _scheduleTaskService;
 
-    public ProductProviderInfigo(IWebHelper webHelper, ISettingService settingService, ILocalizationService localizationService)
+    public ProductProviderInfigo(IWebHelper webHelper, ISettingService settingService, 
+                                 ILocalizationService localizationService, IScheduleTaskService scheduleTaskService)
     {
-        _webHelper                = webHelper;
-        _settingService           = settingService;
+        _webHelper           = webHelper;
+        _settingService      = settingService;
         _localizationService = localizationService;
+        _scheduleTaskService = scheduleTaskService;
     }
 
     public override async Task InstallAsync()
@@ -34,6 +39,18 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
         {
             ["Plugins.ProductProvider.Infigo.ExternalApiUrl"] = "External Api Url"
         });
+        
+        if (await _scheduleTaskService.GetTaskByTypeAsync(ProductProviderInfigoDefaults.SyncProductsTask.Type) is null)
+        {
+            await _scheduleTaskService.InsertTaskAsync(new()
+            {
+                Enabled        = true,
+                LastEnabledUtc = DateTime.UtcNow,
+                Seconds        = 86400,
+                Name           = ProductProviderInfigoDefaults.SyncProductsTask.Name,
+                Type           = ProductProviderInfigoDefaults.SyncProductsTask.Type
+            });
+        }
 
         await base.InstallAsync();
     }
