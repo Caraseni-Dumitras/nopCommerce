@@ -6,7 +6,5 @@ namespace Nop.Plugin.ProductProvider.Infigo.Services;
 
 public interface IProductProviderInfigoService
 {
-    public Task<List<int>>       GetAllProductsIds();
-    public Task<ApiProductModel> GetProductById(int     id);
     public Task                  Insert(ApiProductModel model);
 }

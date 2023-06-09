@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Nop.Core.Domain.Catalog;
 using Nop.Plugin.ProductProvider.Infigo.Mappers;
 using Nop.Plugin.ProductProvider.Infigo.Models;
@@ -41,26 +40,6 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         _settingService     = settingService;
     }
 
-    public async Task<List<int>> GetAllProductsIds()
-    {
-        _logger.LogDebug("Getting all products ids");
-        var data = await _httpClient.RequestAllProductsIdsAsync();
-
-        var productIdList = JsonConvert.DeserializeObject<List<int>>(data);
-
-        return productIdList;
-    }
-
-    public async Task<ApiProductModel> GetProductById(int id)
-    {
-        _logger.LogDebug("Getting product by id {Id}", id);
-        var data = await _httpClient.RequestProductByIdAsync(id);
-
-        var product = JsonConvert.DeserializeObject<ApiProductModel>(data);
-
-        return product;
-    }
-
     public async Task Insert(ApiProductModel model)
     {
         _logger.LogDebug("Insert all synchronized products");
@@ -73,16 +52,15 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         
         if (!model.ThumbnailUrls.Any())
         {
-            if (!String.IsNullOrEmpty(settings.DefaultProductPictureUrl))
+            if (String.IsNullOrEmpty(settings.DefaultProductPictureUrl))
             {
-                model.ThumbnailUrls.Add(settings.DefaultProductPictureUrl);
+                var tempProduct = await _httpClient.RequestProductByIdAsync(1548);
+                settings.DefaultProductPictureUrl = tempProduct.ThumbnailUrls.FirstOrDefault();
             }
+            model.ThumbnailUrls.Add(settings.DefaultProductPictureUrl);
         }
-
-        if (model.ThumbnailUrls.Any())
-        {
-            await InsertProductPicture(model, product);
-        }
+        
+        await InsertProductPicture(model, product);
     }
 
     private async Task InsertProductAttributes(ICollection<ApiProductAttributeModel> attributes, Product product)

@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Nop.Plugin.ProductProvider.Infigo.Models;
 using Nop.Services.Configuration;
 
 namespace Nop.Plugin.ProductProvider.Infigo.Services;
@@ -21,7 +24,7 @@ public class ProductProviderInfigoHttpClient
         _logger         = logger;
     }
 
-    public async Task<string> RequestAllProductsIdsAsync()
+    public async Task<List<int>> RequestAllProductsIdsAsync()
     {
         try
         {
@@ -33,8 +36,10 @@ public class ProductProviderInfigoHttpClient
 
             var response = await _httpClient.GetAsync(url);
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            return responseBody;
+            var responseBody  = await response.Content.ReadAsStringAsync();
+            var productIdList = JsonConvert.DeserializeObject<List<int>>(responseBody);
+            
+            return productIdList;
         }
         catch (Exception)
         {
@@ -43,7 +48,7 @@ public class ProductProviderInfigoHttpClient
         }
     }
     
-    public async Task<string> RequestProductByIdAsync(int id)
+    public async Task<ApiProductModel> RequestProductByIdAsync(int id)
     {
         try
         {
@@ -56,7 +61,9 @@ public class ProductProviderInfigoHttpClient
             var response = await _httpClient.GetAsync(url);
 
             var responseBody = await response.Content.ReadAsStringAsync();
-            return responseBody;
+            var product      = JsonConvert.DeserializeObject<ApiProductModel>(responseBody);
+            
+            return product;
         }
         catch (Exception)
         {
