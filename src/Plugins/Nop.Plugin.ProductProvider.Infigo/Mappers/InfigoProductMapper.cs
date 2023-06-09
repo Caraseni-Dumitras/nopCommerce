@@ -57,4 +57,21 @@ public class InfigoProductMapper : IInfigoProductMapper
             AttributeControlTypeId = model.AttributeControlType
         };
     }
+
+    public SpecificationAttributeOption ToEntity(int specificationAttributeId, string productId)
+    {
+        return new SpecificationAttributeOption()
+        {
+            Name = productId, SpecificationAttributeId = specificationAttributeId
+        };
+    }
+
+    public ProductSpecificationAttribute ToEntity(int specificationAttributeOptionId, int productId)
+    {
+        return new ProductSpecificationAttribute()
+        {
+            ProductId = productId,
+            SpecificationAttributeOptionId = specificationAttributeOptionId
+        };
+    }
 }

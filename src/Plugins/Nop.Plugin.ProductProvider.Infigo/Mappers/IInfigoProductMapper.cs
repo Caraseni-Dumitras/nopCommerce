@@ -13,4 +13,6 @@ public interface IInfigoProductMapper
     public ProductAttributeMapping ToEntity(ProductAttribute         productAttribute,
                                             Product                  product, 
                                             ApiProductAttributeModel model);
+    public SpecificationAttributeOption  ToEntity(int specificationAttributeId, string productId);
+    public ProductSpecificationAttribute ToEntity(int specificationAttributeOptionId, int productId);
 }

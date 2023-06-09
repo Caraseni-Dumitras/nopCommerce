@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Nop.Core;
+using Nop.Core.Domain.Catalog;
+using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
@@ -18,16 +20,18 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
     private readonly   ILocalizationService           _localizationService;
     private readonly   IScheduleTaskService           _scheduleTaskService;
     private readonly   ILogger<ProductProviderInfigo> _logger;
+    private readonly   ISpecificationAttributeService _specificationAttributeService;
 
-    public ProductProviderInfigo(IWebHelper           webHelper,           ISettingService      settingService, 
-                                 ILocalizationService localizationService, IScheduleTaskService scheduleTaskService, 
-                                 ILogger<ProductProviderInfigo> logger)
+    public ProductProviderInfigo(IWebHelper                     webHelper,           ISettingService      settingService, 
+                                 ILocalizationService           localizationService, IScheduleTaskService scheduleTaskService, 
+                                 ILogger<ProductProviderInfigo> logger,              ISpecificationAttributeService specificationAttributeService)
     {
-        _webHelper           = webHelper;
-        _settingService      = settingService;
-        _localizationService = localizationService;
-        _scheduleTaskService = scheduleTaskService;
-        _logger              = logger;
+        _webHelper                          = webHelper;
+        _settingService                     = settingService;
+        _localizationService                = localizationService;
+        _scheduleTaskService                = scheduleTaskService;
+        _logger                             = logger;
+        _specificationAttributeService = specificationAttributeService;
     }
 
     public override async Task InstallAsync()
@@ -64,6 +68,10 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
                 Type           = ProductProviderInfigoDefaults.SyncProductsTask.Type
             });
         }
+
+        var specificationAttribute = new SpecificationAttribute() { Name = "ExternalId" };
+
+        await _specificationAttributeService.InsertSpecificationAttributeAsync(specificationAttribute);
 
         await base.InstallAsync();
     }

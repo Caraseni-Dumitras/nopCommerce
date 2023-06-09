@@ -22,6 +22,7 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
     private readonly IPictureService                       _pictureService;
     private readonly ILogger<ProductProviderInfigoService> _logger;
     private readonly ISettingService                       _settingService;
+    private readonly ISpecificationAttributeService        _specificationAttributeService;
 
     public ProductProviderInfigoService(ProductProviderInfigoHttpClient       httpClient, 
                                         IProductService                       productService, 
@@ -29,21 +30,23 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
                                         IProductAttributeService              productAttributeService, 
                                         IPictureService                       pictureService, 
                                         ILogger<ProductProviderInfigoService> logger, 
-                                        ISettingService                       settingService)
+                                        ISettingService                       settingService, ISpecificationAttributeService specificationAttributeService)
     {
-        _httpClient              = httpClient;
-        _productService          = productService;
-        _infigoProductMapper     = infigoProductMapper;
-        _productAttributeService = productAttributeService;
-        _pictureService          = pictureService;
-        _logger                  = logger;
-        _settingService     = settingService;
+        _httpClient                         = httpClient;
+        _productService                     = productService;
+        _infigoProductMapper                = infigoProductMapper;
+        _productAttributeService            = productAttributeService;
+        _pictureService                     = pictureService;
+        _logger                             = logger;
+        _settingService                     = settingService;
+        _specificationAttributeService = specificationAttributeService;
     }
 
     public async Task Insert(ApiProductModel model)
     {
         _logger.LogDebug("Insert all synchronized products");
         var product = _infigoProductMapper.ToEntity(model);
+        
         await _productService.InsertProductAsync(product);
 
         await InsertProductAttributes(model.ProductAttributes, product);
@@ -61,6 +64,8 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         }
         
         await InsertProductPicture(model, product);
+
+        await InsertSpecificationAttributeOption(model.Id);
     }
 
     private async Task InsertProductAttributes(ICollection<ApiProductAttributeModel> attributes, Product product)
@@ -97,12 +102,9 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         foreach (var url in model.ThumbnailUrls)
         {
             var imageBinary = await _httpClient.RequestPicturesAsync(url);
-
-            var fileInfo = new FileInfo(url);
-
-            var mimeType = "image/" + fileInfo.Extension.Remove(0,1);
-            
-            var picture = await _pictureService.InsertPictureAsync(imageBinary, mimeType, model.Name);
+            var fileInfo    = new FileInfo(url);
+            var mimeType    = "image/" + fileInfo.Extension.Remove(0, 1);
+            var picture     = await _pictureService.InsertPictureAsync(imageBinary, mimeType, model.Name);
             var productPicture = new ProductPicture
             {
                 PictureId = picture.Id, 
@@ -110,5 +112,23 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
             }; 
             await _productService.InsertProductPictureAsync(productPicture);   
         }
+    }
+
+    private async Task InsertSpecificationAttributeOption(int productId)
+    {
+        var specificationAttribute   = await _specificationAttributeService.GetSpecificationAttributesAsync();
+        var specificationAttributeId = specificationAttribute.Where(s => s.Name == "ExternalId").ToString();
+        var specificationAttributeOption = _infigoProductMapper.ToEntity(int.Parse(specificationAttributeId), productId.ToString());
+        
+        await _specificationAttributeService.InsertSpecificationAttributeOptionAsync(specificationAttributeOption);
+        
+        await InsertProductSpecificationAttributeMapping(specificationAttributeOption.Id, productId);
+    }
+
+    private async Task InsertProductSpecificationAttributeMapping(int specificationAttributeOptionId, int productId)
+    {
+        var productSpecificationAttribute = _infigoProductMapper.ToEntity(specificationAttributeOptionId, productId);
+
+        await _specificationAttributeService.InsertProductSpecificationAttributeAsync(productSpecificationAttribute);
     }
 }
