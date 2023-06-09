@@ -12,12 +12,12 @@ public class ApiProductModel
     public decimal                               Price                   { get; set; }
     public int                                   StockValue              { get; set; }
     public string                                Sku                     { get; set; }
-    public List<string>                          PreviewUrls             { get; set; }
-    public List<string>                          ThumbnailUrls           { get; set; }
-    public List<string>                          Tags                    { get; set; }
-    public List<ApiProductAttributeModel>        ProductAttributes       { get; set; }
-    public List<ApiAttributeCombinationsModel>   AttributeCombinations   { get; set; }
-    public List<ApiMisConfigurationsModel>       MisConfigurations       { get; set; }
-    public List<ApiSpecificationAttributesModel> SpecificationAttributes { get; set; }
+    public List<string>                          PreviewUrls             { get; set; } = new();
+    public List<string>                          ThumbnailUrls           { get; set; } = new();
+    public List<string>                          Tags                    { get; set; } = new();
+    public List<ApiProductAttributeModel>        ProductAttributes       { get; set; } = new();
+    public List<ApiAttributeCombinationsModel>   AttributeCombinations   { get; set; } = new();
+    public List<ApiMisConfigurationsModel>       MisConfigurations       { get; set; } = new();
+    public List<ApiSpecificationAttributesModel> SpecificationAttributes { get; set; } = new();
     
 }
