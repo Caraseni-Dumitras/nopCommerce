@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -7,6 +9,7 @@ using Nop.Core.Domain.Catalog;
 using Nop.Plugin.ProductProvider.Infigo.Mappers;
 using Nop.Plugin.ProductProvider.Infigo.Models;
 using Nop.Services.Catalog;
+using Nop.Services.Configuration;
 using Nop.Services.Media;
 
 namespace Nop.Plugin.ProductProvider.Infigo.Services;
@@ -19,13 +22,15 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
     private readonly IProductAttributeService              _productAttributeService;
     private readonly IPictureService                       _pictureService;
     private readonly ILogger<ProductProviderInfigoService> _logger;
+    private readonly ISettingService                       _settingService;
 
     public ProductProviderInfigoService(ProductProviderInfigoHttpClient       httpClient, 
                                         IProductService                       productService, 
                                         IInfigoProductMapper                  infigoProductMapper,
                                         IProductAttributeService              productAttributeService, 
                                         IPictureService                       pictureService, 
-                                        ILogger<ProductProviderInfigoService> logger)
+                                        ILogger<ProductProviderInfigoService> logger, 
+                                        ISettingService                       settingService)
     {
         _httpClient              = httpClient;
         _productService          = productService;
@@ -33,6 +38,7 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         _productAttributeService = productAttributeService;
         _pictureService          = pictureService;
         _logger                  = logger;
+        _settingService     = settingService;
     }
 
     public async Task<List<int>> GetAllProductsIds()
@@ -62,10 +68,20 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         await _productService.InsertProductAsync(product);
 
         await InsertProductAttributes(model.ProductAttributes, product);
-
-        if (model.PreviewUrls != null)
+        
+        var settings = await _settingService.LoadSettingAsync<ProductProviderInfigoSettings>();
+        
+        if (!model.ThumbnailUrls.Any())
         {
-            await InsertProductPicture(model, product);   
+            if (!String.IsNullOrEmpty(settings.DefaultProductPicture))
+            {
+                model.ThumbnailUrls.Add(settings.DefaultProductPicture);
+            }
+        }
+
+        if (model.ThumbnailUrls.Any())
+        {
+            await InsertProductPicture(model, product);
         }
     }
 

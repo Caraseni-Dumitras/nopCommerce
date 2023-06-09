@@ -36,10 +36,10 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
         var apiSettings = new ProductProviderInfigoSettings
         {
             BaseApiUrl = "",
-            ApiType = "",
             ApiKey = "",
             GetProductByIdUrl ="",
-            GetAllProductsUrl = ""
+            GetAllProductsUrl = "",
+            DefaultProductPicture = ""
         };
 
         await _settingService.SaveSettingAsync(apiSettings);
@@ -47,10 +47,10 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
         await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
         {
             ["Plugins.ProductProvider.Infigo.BaseApiUrl"]        = "Base Api Url",
-            ["Plugins.ProductProvider.Infigo.ApiType"]           = "Api Type",
             ["Plugins.ProductProvider.Infigo.ApiKey"]            = "Api Key",
             ["Plugins.ProductProvider.Infigo.GetProductByIdUrl"] = "Get Product By Id Url",
-            ["Plugins.ProductProvider.Infigo.GetAllProductsUrl"] = "Get All Products Url"
+            ["Plugins.ProductProvider.Infigo.GetAllProductsUrl"] = "Get All Products Url",
+            ["Plugins.ProductProvider.Infigo.DefaultProductPicture"] = "Default Product Picture"
         });
         
         if (await _scheduleTaskService.GetTaskByTypeAsync(ProductProviderInfigoDefaults.SyncProductsTask.Type) is null)

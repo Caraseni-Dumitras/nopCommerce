@@ -26,10 +26,10 @@ public class ProductProviderInfigoController : BasePluginController
         var model = new ConfigurationModel()
         {
             BaseApiUrl = apiSettings.BaseApiUrl,
-            ApiType = apiSettings.ApiType,
             ApiKey = apiSettings.ApiKey,
             GetAllProductsUrl = apiSettings.GetAllProductsUrl,
-            GetProductByIdUrl = apiSettings.GetProductByIdUrl
+            GetProductByIdUrl = apiSettings.GetProductByIdUrl,
+            DefaultProductPicture = apiSettings.DefaultProductPicture
         };
         
         return View("~/Plugins/ProductProvider.Infigo/Views/Configure.cshtml", model);
@@ -41,10 +41,10 @@ public class ProductProviderInfigoController : BasePluginController
         var apiSettings = new ProductProviderInfigoSettings()
         {
             BaseApiUrl        = model.BaseApiUrl,
-            ApiType           = model.ApiType,
             ApiKey            = model.ApiKey,
             GetAllProductsUrl = model.GetAllProductsUrl,
-            GetProductByIdUrl = model.GetProductByIdUrl
+            GetProductByIdUrl = model.GetProductByIdUrl,
+            DefaultProductPicture = model.DefaultProductPicture
         };
 
         await _settingService.SaveSettingAsync(apiSettings);

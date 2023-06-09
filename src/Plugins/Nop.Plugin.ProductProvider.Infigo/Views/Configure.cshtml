@@ -13,20 +13,11 @@
             <div class="card-text">
                 <p>
                     1. Api's type represents the api's authorization scheme type.<br>
-                    2. Api's key represents the api's authorization key value.<br>
-                    3. Base Api Url represents the api's basic Url.<br>
-                    4. Get all products Url represents the api's GetAllProducts request Url.<br>
-                    5. Get product by id Url represents the api's GetProductByIdUrl request Url.<br>
+                    2. Base Api Url represents the api's basic Url.<br>
+                    3. Get all products Url represents the api's GetAllProducts request Url.<br>
+                    4. Get product by id Url represents the api's GetProductByIdUrl request Url.<br>
+                    5. Default product picture represents the picture api's Url you will use as default if don't upload an image.<br>
                 </p>
-                <div class="form-group row">
-                    <div class="col-md-1">
-                        <p class="font-weight-bold">Api Type</p>
-                    </div>
-                    <div class="col-md-11">
-                        <input name="ApiType" type="text" value="@Model.ApiType" asp-for="ApiType" placeholder="Insert Api Type" class="form-control">
-                        <nop-label asp-for="ApiType"/>
-                    </div>
-                </div>
                 <div class="form-group row">
                     <div class="col-md-1">
                         <p class="font-weight-bold">Api Key</p>
@@ -61,6 +52,15 @@
                     <div class="col-md-11">
                         <input name="GetProductByIdUrl" type="text" value="@Model.GetProductByIdUrl" asp-for="GetProductByIdUrl" placeholder="Insert Get Product By Id Url" class="form-control">
                         <nop-label asp-for="GetProductByIdUrl"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <p class="font-weight-bold">Default Image Url</p>
+                    </div>
+                    <div class="col-md-11">
+                        <input name="DefaultProductPicture" type="text" value="@Model.DefaultProductPicture" asp-for="DefaultProductPicture" placeholder="Insert Default Product Picture Url" class="form-control">
+                        <nop-label asp-for="DefaultProductPicture"/>
                     </div>
                 </div>
                 <div class="form-group row">
