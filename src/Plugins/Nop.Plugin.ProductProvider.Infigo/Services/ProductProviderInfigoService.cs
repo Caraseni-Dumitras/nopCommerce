@@ -1,45 +1,44 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Nop.Core.Domain.Catalog;
 using Nop.Plugin.ProductProvider.Infigo.Mappers;
 using Nop.Plugin.ProductProvider.Infigo.Models;
 using Nop.Services.Catalog;
-using Nop.Services.Configuration;
 using Nop.Services.Media;
 
 namespace Nop.Plugin.ProductProvider.Infigo.Services;
 
 public class ProductProviderInfigoService : IProductProviderInfigoService
 {
-    private readonly ProductProviderInfigoHttpClient _httpClient;
-    private readonly ISettingService                 _settingService;
-    private readonly IProductService                 _productService;
-    private readonly IInfigoProductMapper            _infigoProductMapper;
-    private readonly IProductAttributeService        _productAttributeService;
-    private readonly IPictureService                 _pictureService;
+    private readonly ProductProviderInfigoHttpClient       _httpClient;
+    private readonly IProductService                       _productService;
+    private readonly IInfigoProductMapper                  _infigoProductMapper;
+    private readonly IProductAttributeService              _productAttributeService;
+    private readonly IPictureService                       _pictureService;
+    private readonly ILogger<ProductProviderInfigoService> _logger;
 
-    public ProductProviderInfigoService(ProductProviderInfigoHttpClient httpClient,              ISettingService      settingService,
-                                        IProductService                 productService,          IInfigoProductMapper infigoProductMapper,
-                                        IProductAttributeService        productAttributeService, IPictureService pictureService)
+    public ProductProviderInfigoService(ProductProviderInfigoHttpClient       httpClient, 
+                                        IProductService                       productService, 
+                                        IInfigoProductMapper                  infigoProductMapper,
+                                        IProductAttributeService              productAttributeService, 
+                                        IPictureService                       pictureService, 
+                                        ILogger<ProductProviderInfigoService> logger)
     {
         _httpClient              = httpClient;
-        _settingService          = settingService;
         _productService          = productService;
         _infigoProductMapper     = infigoProductMapper;
         _productAttributeService = productAttributeService;
         _pictureService          = pictureService;
+        _logger                  = logger;
     }
 
-    public async Task<List<int>> GetAllProducts()
+    public async Task<List<int>> GetAllProductsIds()
     {
-        var settings = await _settingService.LoadSettingAsync<ProductProviderInfigoSettings>();
-        var url      = settings.BaseApiUrl + settings.GetAllProductsUrl;
-        var apiType  = settings.ApiType;
-        var apiKey   = settings.ApiKey;
-
-        var data = await _httpClient.RequestAsync(url, apiType, apiKey);
+        _logger.LogDebug("Getting all products ids");
+        var data = await _httpClient.RequestAllProductsIdsAsync();
 
         var productIdList = JsonConvert.DeserializeObject<List<int>>(data);
 
@@ -48,12 +47,8 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
 
     public async Task<ApiProductModel> GetProductById(int id)
     {
-        var settings = await _settingService.LoadSettingAsync<ProductProviderInfigoSettings>();
-        var url      = settings.BaseApiUrl + settings.GetProductByIdUrl + id;
-        var apiType  = settings.ApiType;
-        var apiKey   = settings.ApiKey;
-
-        var data = await _httpClient.RequestAsync(url, apiType, apiKey);
+        _logger.LogDebug("Getting product by id {Id}", id);
+        var data = await _httpClient.RequestProductByIdAsync(id);
 
         var product = JsonConvert.DeserializeObject<ApiProductModel>(data);
 
@@ -62,7 +57,8 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
 
     public async Task Insert(ApiProductModel model)
     {
-        var product    = _infigoProductMapper.ToEntity(model);
+        _logger.LogDebug("Insert all synchronized products");
+        var product = _infigoProductMapper.ToEntity(model);
         await _productService.InsertProductAsync(product);
 
         await InsertProductAttributes(model.ProductAttributes, product);
@@ -75,6 +71,7 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
 
     private async Task InsertProductAttributes(ICollection<ApiProductAttributeModel> attributes, Product product)
     {
+        _logger.LogDebug("Insert all product attributes");
         foreach (var productAttributeModel in attributes)
         {
             var productAttribute = _infigoProductMapper.ToEntity(productAttributeModel);
@@ -92,6 +89,7 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
                                                    ProductAttributeMapping                    attributeMapping,
                                                    Product                                    product)
     {
+        _logger.LogDebug("Insert all attribute values");
         foreach (var productAttributeValueModel in models)
         {
             var productAttributeValue = _infigoProductMapper.ToEntity(productAttributeValueModel, attributeMapping, product);
@@ -100,14 +98,11 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
     }
 
     private async Task InsertProductPicture(ApiProductModel model, Product product)
-    { 
-        var settings = await _settingService.LoadSettingAsync<ProductProviderInfigoSettings>();
-        var apiType  = settings.ApiType;
-        var apiKey   = settings.ApiKey;
-
+    {
+        _logger.LogDebug("Insert product pictures");
         foreach (var url in model.ThumbnailUrls)
         {
-            var imageBinary = await _httpClient.RequestPictureAsync(url, apiType, apiKey);
+            var imageBinary = await _httpClient.RequestPicturesAsync(url);
 
             var fileInfo = new FileInfo(url);
 
