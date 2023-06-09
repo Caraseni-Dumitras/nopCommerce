@@ -30,4 +30,21 @@ public class ProductProviderInfigoHttpClient
             throw e.InnerException;
         }
     }
+    
+    public async Task<byte[]> RequestPictureAsync(string url, string apiType, string apiKey)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiType, apiKey);
+
+            var response = await _httpClient.GetAsync(url);
+
+            var responseBody = await response.Content.ReadAsByteArrayAsync();
+            return responseBody;
+        }
+        catch (Exception e)
+        {
+            throw e.InnerException;
+        }
+    }
 }

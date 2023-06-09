@@ -6,20 +6,22 @@ namespace Nop.Plugin.ProductProvider.Infigo.BackgroundTasks;
 
 public class SyncProductsTask : IScheduleTask
 {
-    private readonly ProductProviderInfigoHttpClient _httpClient;
-    private readonly IScheduleTaskService            _scheduleTaskService;
     private readonly IProductProviderInfigoService   _productProviderInfigoService;
     
-    public SyncProductsTask(ProductProviderInfigoHttpClient storeHttpClient, IScheduleTaskService scheduleTaskService, 
-                            IProductProviderInfigoService productProviderInfigoService)
+    public SyncProductsTask(IProductProviderInfigoService productProviderInfigoService)
     {
-        _httpClient                        = storeHttpClient;
-        _scheduleTaskService               = scheduleTaskService;
-        _productProviderInfigoService      = productProviderInfigoService;
+        _productProviderInfigoService = productProviderInfigoService;
     }
     
     public async Task ExecuteAsync()
     {
-        await _productProviderInfigoService.GetAllProducts();
+        var products = await _productProviderInfigoService.GetAllProducts();
+
+        foreach (var item in products)
+        {
+            var product = await _productProviderInfigoService.GetProductById(item);
+
+            await _productProviderInfigoService.Insert(product);
+        }
     }
 }
