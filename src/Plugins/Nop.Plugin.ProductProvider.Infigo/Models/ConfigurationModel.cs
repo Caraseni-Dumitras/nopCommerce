@@ -12,6 +12,6 @@ public record ConfigurationModel
     public string GetAllProductsUrl { get; set; }
     [NopResourceDisplayName("Plugins.ProductProvider.Infigo.GetProductByIdUrl")]
     public string GetProductByIdUrl { get; set; }
-    [NopResourceDisplayName("Plugins.ProductProvider.Infigo.DefaultProductPicture")]
-    public string DefaultProductPicture { get; set; }
+    [NopResourceDisplayName("Plugins.ProductProvider.Infigo.DefaultProductPictureUrl")]
+    public string DefaultProductPictureUrl { get; set; }
 }

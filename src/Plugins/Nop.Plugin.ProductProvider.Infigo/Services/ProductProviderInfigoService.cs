@@ -73,9 +73,9 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         
         if (!model.ThumbnailUrls.Any())
         {
-            if (!String.IsNullOrEmpty(settings.DefaultProductPicture))
+            if (!String.IsNullOrEmpty(settings.DefaultProductPictureUrl))
             {
-                model.ThumbnailUrls.Add(settings.DefaultProductPicture);
+                model.ThumbnailUrls.Add(settings.DefaultProductPictureUrl);
             }
         }
 

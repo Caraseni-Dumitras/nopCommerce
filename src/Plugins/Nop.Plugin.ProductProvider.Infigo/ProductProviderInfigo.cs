@@ -35,11 +35,11 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
         _logger.LogDebug("Installing plugin");
         var apiSettings = new ProductProviderInfigoSettings
         {
-            BaseApiUrl = "",
-            ApiKey = "",
-            GetProductByIdUrl ="",
-            GetAllProductsUrl = "",
-            DefaultProductPicture = ""
+            BaseApiUrl               = "",
+            ApiKey                   = "",
+            GetProductByIdUrl        = "",
+            GetAllProductsUrl        = "",
+            DefaultProductPictureUrl = ""
         };
 
         await _settingService.SaveSettingAsync(apiSettings);
@@ -50,7 +50,7 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
             ["Plugins.ProductProvider.Infigo.ApiKey"]            = "Api Key",
             ["Plugins.ProductProvider.Infigo.GetProductByIdUrl"] = "Get Product By Id Url",
             ["Plugins.ProductProvider.Infigo.GetAllProductsUrl"] = "Get All Products Url",
-            ["Plugins.ProductProvider.Infigo.DefaultProductPicture"] = "Default Product Picture"
+            ["Plugins.ProductProvider.Infigo.DefaultProductPictureUrl"] = "Default Product Picture Url"
         });
         
         if (await _scheduleTaskService.GetTaskByTypeAsync(ProductProviderInfigoDefaults.SyncProductsTask.Type) is null)
