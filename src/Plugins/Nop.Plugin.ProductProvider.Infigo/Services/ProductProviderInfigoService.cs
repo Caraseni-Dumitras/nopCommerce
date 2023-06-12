@@ -46,7 +46,7 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
     {
         _logger.LogDebug("Insert all synchronized products");
 
-        var insertedProduct = await GetProductByModelId(model.Id);
+        var insertedProduct = await GetProductByExternalId(model.Id);
 
         if (insertedProduct != null)
         {
@@ -146,7 +146,7 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         await _specificationAttributeService.InsertProductSpecificationAttributeAsync(productSpecificationAttribute);
     }
 
-    private async Task<Product> GetProductByModelId(int modelId)
+    private async Task<Product> GetProductByExternalId(int modelId)
     {
         var specificationAttributes      = await _specificationAttributeService.GetSpecificationAttributesAsync();
         var specificationAttribute       = specificationAttributes.FirstOrDefault(s => s.Name == "ExternalId");
