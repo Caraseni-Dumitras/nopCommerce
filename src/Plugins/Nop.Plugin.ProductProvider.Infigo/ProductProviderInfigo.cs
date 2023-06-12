@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Nop.Core;
@@ -80,5 +81,23 @@ public class ProductProviderInfigo : BasePlugin, IMiscPlugin
     {
         _logger.LogDebug("Getting configuration page url");
         return $"{_webHelper.GetStoreLocation()}Admin/ProductProviderInfigo/Configure";
+    }
+
+    public override async Task UninstallAsync()
+    {
+        var productProviderTask = await _scheduleTaskService.GetTaskByTypeAsync(ProductProviderInfigoDefaults.SyncProductsTask.Type);
+        if (productProviderTask != null)
+        {
+            await _scheduleTaskService.DeleteTaskAsync(productProviderTask);
+        }
+        
+        var specificationAttributes = await _specificationAttributeService.GetSpecificationAttributesAsync();
+        var specificationAttribute  = specificationAttributes.FirstOrDefault(s => s.Name == "ExternalId");
+        if (specificationAttribute != null)
+        {
+            await _specificationAttributeService.DeleteSpecificationAttributeAsync(specificationAttribute);
+        }
+
+        await base.UninstallAsync();
     }
 }

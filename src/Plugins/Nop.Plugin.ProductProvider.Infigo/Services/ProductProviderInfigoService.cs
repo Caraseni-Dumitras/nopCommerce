@@ -45,6 +45,14 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
     public async Task Insert(ApiProductModel model)
     {
         _logger.LogDebug("Insert all synchronized products");
+
+        var insertedProduct = await GetProductByModelId(model.Id);
+
+        if (insertedProduct != null)
+        {
+            return;
+        }
+        
         var product = _infigoProductMapper.ToEntity(model);
         
         await _productService.InsertProductAsync(product);
@@ -65,7 +73,7 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         
         await InsertProductPicture(model, product);
 
-        await InsertSpecificationAttributeOption(model.Id);
+        await InsertSpecificationAttributeOption(product.Id, model.Id);
     }
 
     private async Task InsertProductAttributes(ICollection<ApiProductAttributeModel> attributes, Product product)
@@ -114,14 +122,20 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         }
     }
 
-    private async Task InsertSpecificationAttributeOption(int productId)
+    private async Task InsertSpecificationAttributeOption(int productId, int modelId)
     {
-        var specificationAttribute   = await _specificationAttributeService.GetSpecificationAttributesAsync();
-        var specificationAttributeId = specificationAttribute.Where(s => s.Name == "ExternalId").ToString();
-        var specificationAttributeOption = _infigoProductMapper.ToEntity(int.Parse(specificationAttributeId), productId.ToString());
+        var specificationAttributes      = await _specificationAttributeService.GetSpecificationAttributesAsync();
+        var specificationAttribute       = specificationAttributes.FirstOrDefault(s => s.Name == "ExternalId");
+
+        var specificationAttributeOptions = await _specificationAttributeService.GetSpecificationAttributeOptionsBySpecificationAttributeAsync(specificationAttribute.Id);
+        var specificationAttributeOption = specificationAttributeOptions.FirstOrDefault(s => s.Name == modelId.ToString());
         
-        await _specificationAttributeService.InsertSpecificationAttributeOptionAsync(specificationAttributeOption);
-        
+        if (specificationAttributeOption == null)
+        { 
+            specificationAttributeOption = _infigoProductMapper.ToEntity(specificationAttribute.Id, modelId.ToString());
+            await _specificationAttributeService.InsertSpecificationAttributeOptionAsync(specificationAttributeOption);
+        }
+
         await InsertProductSpecificationAttributeMapping(specificationAttributeOption.Id, productId);
     }
 
@@ -130,5 +144,36 @@ public class ProductProviderInfigoService : IProductProviderInfigoService
         var productSpecificationAttribute = _infigoProductMapper.ToEntity(specificationAttributeOptionId, productId);
 
         await _specificationAttributeService.InsertProductSpecificationAttributeAsync(productSpecificationAttribute);
+    }
+
+    private async Task<Product> GetProductByModelId(int modelId)
+    {
+        var specificationAttributes      = await _specificationAttributeService.GetSpecificationAttributesAsync();
+        var specificationAttribute       = specificationAttributes.FirstOrDefault(s => s.Name == "ExternalId");
+        
+        if (specificationAttribute == null)
+        {
+            return null;
+        }
+        
+        var specificationAttributeOptions = await _specificationAttributeService.GetSpecificationAttributeOptionsBySpecificationAttributeAsync(specificationAttribute.Id);
+        var specificationAttributeOption = specificationAttributeOptions.FirstOrDefault(s => s.Name == modelId.ToString());
+        
+        if (specificationAttributeOption == null)
+        {
+            return null;
+        }
+
+        var productSpecificationAttributes = await _specificationAttributeService.GetProductSpecificationAttributesAsync(specificationAttributeOptionId:specificationAttributeOption.Id);
+        var productSpecificationAttribute = productSpecificationAttributes.FirstOrDefault(s => s.SpecificationAttributeOptionId == specificationAttributeOption.Id);
+        
+        if (productSpecificationAttribute == null)
+        {
+            return null;
+        }
+
+        var product = await _productService.GetProductByIdAsync(productSpecificationAttribute.ProductId);
+
+        return product;
     }
 }
