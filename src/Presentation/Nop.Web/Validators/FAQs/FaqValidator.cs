@@ -4,7 +4,7 @@ using Nop.Services.Localization;
 using Nop.Web.Areas.Admin.Models.FAQs;
 using Nop.Web.Framework.Validators;
 
-namespace Nop.Web.Areas.Admin.Validators.FAQs;
+namespace Nop.Web.Validators.FAQs;
 
 public class FaqValidator : BaseNopValidator<FaqModel>
 {
