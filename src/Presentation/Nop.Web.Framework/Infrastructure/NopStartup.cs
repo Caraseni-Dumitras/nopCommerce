@@ -24,6 +24,7 @@ using Nop.Services.Directory;
 using Nop.Services.Discounts;
 using Nop.Services.Events;
 using Nop.Services.ExportImport;
+using Nop.Services.FAQs;
 using Nop.Services.Forums;
 using Nop.Services.Gdpr;
 using Nop.Services.Helpers;
@@ -128,6 +129,7 @@ namespace Nop.Web.Framework.Infrastructure
             services.AddScoped<IStoreContext, WebStoreContext>();
 
             //services
+            services.AddScoped<IFaqService, FaqService>();
             services.AddScoped<IBackInStockSubscriptionService, BackInStockSubscriptionService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICompareProductsService, CompareProductsService>();
