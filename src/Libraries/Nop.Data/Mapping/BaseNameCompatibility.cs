@@ -2,6 +2,7 @@
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Discounts;
+using Nop.Core.Domain.FAQs;
 using Nop.Core.Domain.Forums;
 using Nop.Core.Domain.News;
 using Nop.Core.Domain.Orders;
@@ -66,6 +67,12 @@ namespace Nop.Data.Mapping
             { (typeof(CustomerAttributeValue), "AttributeId"), "CustomerAttributeId" },
             { (typeof(AddressAttributeValue), "AttributeId"), "AddressAttributeId" },
             { (typeof(CheckoutAttributeValue), "AttributeId"), "CheckoutAttributeId" },
+            { (typeof(Faq), "Id"), "id"},
+            { (typeof(Faq), "QuestionTitle"), "question_title"},
+            { (typeof(Faq), "QuestionDescription"), "question_description"},
+            { (typeof(Faq), "AnswerTitle"), "answer_title"},
+            { (typeof(Faq), "AnswerDescription"), "answer_description"},
+            { (typeof(Faq), "CategoryId"), "category_id"},
         };
     }
 }

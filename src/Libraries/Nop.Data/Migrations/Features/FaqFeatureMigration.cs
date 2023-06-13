@@ -1,4 +1,6 @@
 using FluentMigrator;
+using Nop.Core.Domain.FAQs;
+using Nop.Data.Mapping;
 
 namespace Nop.Data.Migrations.Features;
 
@@ -7,17 +9,17 @@ public class FaqFeatureMigration : MigrationBase
 {
     public override void Up()
     {
-        Create.Table("Faq")
-              .WithColumn("Id").AsInt32().Identity().PrimaryKey()
-              .WithColumn("QuestionTitle").AsString(50).NotNullable()
-              .WithColumn("QuestionDescription").AsString(500).NotNullable()
-              .WithColumn("AnswerTitle").AsString(50).NotNullable()
-              .WithColumn("AnswerDescription").AsString(500).NotNullable()
-              .WithColumn("CategoryId").AsInt32().NotNullable();
+        Create.Table("faq")
+              .WithColumn(NameCompatibilityManager.GetColumnName(typeof(Faq), nameof(Faq.Id))).AsInt32().Identity().PrimaryKey()
+              .WithColumn(NameCompatibilityManager.GetColumnName(typeof(Faq), nameof(Faq.QuestionTitle))).AsString(50).NotNullable()
+              .WithColumn(NameCompatibilityManager.GetColumnName(typeof(Faq), nameof(Faq.QuestionDescription))).AsString(500).NotNullable()
+              .WithColumn(NameCompatibilityManager.GetColumnName(typeof(Faq), nameof(Faq.AnswerTitle))).AsString(50).NotNullable()
+              .WithColumn(NameCompatibilityManager.GetColumnName(typeof(Faq), nameof(Faq.AnswerDescription))).AsString(500).NotNullable()
+              .WithColumn(NameCompatibilityManager.GetColumnName(typeof(Faq), nameof(Faq.CategoryId))).AsInt32().NotNullable();
 
-        Create.ForeignKey("FK_Faq_Category")
-              .FromTable("Faq")
-              .ForeignColumn("CategoryId")
+        Create.ForeignKey("fk_faq_category")
+              .FromTable("faq")
+              .ForeignColumn((NameCompatibilityManager.GetColumnName(typeof(Faq), nameof(Faq.CategoryId))))
               .ToTable("Category")
               .PrimaryColumn("Id");
     }
