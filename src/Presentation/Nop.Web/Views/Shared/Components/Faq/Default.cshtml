@@ -1,0 +1,24 @@
+@using Nop.Web.Models.FAQs
+@model FaqIndexModel
+
+<div class="faq-category" id="faq-category-1">
+    <div class="faq-category-header">
+        <h1>FAQ Generic</h1>
+    </div>
+        @foreach (var faq in Model.FaqModels)
+            {
+                <div class="faq-items">
+                    <div class="faq-item">
+                        <div id="q" class="item-header">
+                            <h1>@faq.QuestionTitle</h1>
+                        </div>
+                        <div class="margin-t-10"> </div>
+                        <div id="a" class="item-description">
+                            <div class="item-answer">
+                                <p>@faq.AnswerDescription</p>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+            }
+</div>
