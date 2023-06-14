@@ -1,7 +1,7 @@
 using FluentValidation;
 using Nop.Data.Mapping;
 using Nop.Services.Localization;
-using Nop.Web.Areas.Admin.Models.FAQs;
+using Nop.Web.Models.FAQs;
 using Nop.Web.Framework.Validators;
 
 namespace Nop.Web.Validators.FAQs;
