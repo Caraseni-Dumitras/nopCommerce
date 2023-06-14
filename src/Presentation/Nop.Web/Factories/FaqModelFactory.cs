@@ -1,11 +1,28 @@
+using Nop.Services.Catalog;
 using Nop.Web.Models.FAQs;
 
 namespace Nop.Web.Factories;
 
 public class FaqModelFactory : IFaqModelFactory
 {
-    public async Task<FaqIndexModel> PrepareFaqIndexModelAsync()
+    protected readonly ICategoryService _categoryService;
+
+    public FaqModelFactory(ICategoryService categoryService)
     {
+        _categoryService = categoryService;
+    }
+
+    public async Task<FaqIndexModel> PrepareFaqIndexModelAsync(int categoryId)
+    {
+        var category = await _categoryService.GetCategoryByIdAsync(categoryId);
+
+        if (category == null)
+        {
+            var categoryList    = await _categoryService.GetAllCategoriesAsync(categoryName:"Generic", showHidden:true);
+            var genericCategory = categoryList.FirstOrDefault(c => c.Name == "Generic");
+            categoryId = genericCategory.Id;
+        }
+        
         var faqModels = new List<FaqModel>();
         faqModels.Add(new FaqModel()
         {
@@ -13,7 +30,7 @@ public class FaqModelFactory : IFaqModelFactory
             QuestionDescription = "QD",
             AnswerTitle         = "AT",
             AnswerDescription   = "Your FAQ section should be seen as a constantly expanding source of value provided to your audience. It is a place where their ever-changing and growing requirements are not only met but anticipated and exceeded frequently.",
-            CategoryId          = 17
+            CategoryId          = 1
         });
         faqModels.Add(new FaqModel()
         {
@@ -41,10 +58,10 @@ public class FaqModelFactory : IFaqModelFactory
         });
         
         //will be change when add services and will extract data from data base
-        
+
         return new FaqIndexModel()
         {
-            FaqModels = faqModels
+            FaqModels = faqModels.Where(f => f.CategoryId == categoryId).ToList()
         };
     }
 }

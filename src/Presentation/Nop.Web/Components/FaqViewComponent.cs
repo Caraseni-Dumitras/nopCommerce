@@ -13,9 +13,9 @@ public class FaqViewComponent : NopViewComponent
         _faqModelFactory = faqModelFactory;
     }
     
-    public async Task<IViewComponentResult> InvokeAsync()
+    public async Task<IViewComponentResult> InvokeAsync(int categoryId = 0)
     {
-        var model = await _faqModelFactory.PrepareFaqIndexModelAsync();
+        var model = await _faqModelFactory.PrepareFaqIndexModelAsync(categoryId);
         return View(model);
     }
 }

@@ -4,5 +4,5 @@ namespace Nop.Web.Factories;
 
 public interface IFaqModelFactory
 {
-    Task<FaqIndexModel> PrepareFaqIndexModelAsync();
+    Task<FaqIndexModel> PrepareFaqIndexModelAsync(int categoryId);
 }
