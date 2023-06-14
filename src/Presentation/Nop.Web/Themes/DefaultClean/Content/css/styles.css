@@ -8864,3 +8864,36 @@ a.skip:hover {
   width: 100%;
   font-size: 16px;
 }
+
+.faq-item .item-header {
+  overflow: hidden;
+  background-color: #00859a;
+  background-image: url(https://img.freepik.com/free-icon/add_318-932014.jpg);
+  background-repeat: no-repeat;
+  background-position: left 15px center;
+  background-size: 20px;
+  margin: 0 0 10px;
+}
+
+.faq-item .item-header.active {
+  background-color: #00859a;
+  background-image: url(https://icon-library.com/images/minus-icon-android/minus-icon-android-14.jpg);
+}
+
+.faq-item .item-header h1 {
+  color: #fff;
+  min-height: 40px;
+  margin-left: 35px;
+  padding: 10px 15px;
+  line-height: 20px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.faq-item .item-header.active h1 {
+  color: #fff;
+}
+
+.faq-item .item-description {
+  padding: 15px 15px 15px 30px;
+}

@@ -1,0 +1,16 @@
+@using Nop.Web.Models.FAQs
+@model FaqIndexModel
+
+@{
+        Layout = "_ColumnsOne";
+    }
+
+<div>
+    <div class="page-title">
+        <h1>Frequently Asked Questions</h1>
+    </div>
+    <div>
+        @await Component.InvokeAsync(typeof(FaqViewComponent))
+    </div>
+</div>
+    

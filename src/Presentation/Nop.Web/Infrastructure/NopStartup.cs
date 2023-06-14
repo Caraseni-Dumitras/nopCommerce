@@ -107,6 +107,7 @@ namespace Nop.Web.Infrastructure
             services.AddScoped<Factories.ITopicModelFactory, Factories.TopicModelFactory>();
             services.AddScoped<Factories.IVendorModelFactory, Factories.VendorModelFactory>();
             services.AddScoped<Factories.IWidgetModelFactory, Factories.WidgetModelFactory>();
+            services.AddScoped<Factories.IFaqModelFactory, Factories.FaqModelFactory>();
 
             //helpers classes
             services.AddScoped<ITinyMceHelper, TinyMceHelper>();
