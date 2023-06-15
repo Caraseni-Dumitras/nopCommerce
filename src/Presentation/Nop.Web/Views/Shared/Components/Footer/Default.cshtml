@@ -60,6 +60,7 @@
                 {
                     <li><a href="@Url.RouteUrl("NewProducts")">@T("Products.NewProducts")</a></li>
                 }
+                <li><a href="@Url.Action("Index", "Faq")"></a>FAQ</li>
                 @foreach (var topic in Model.Topics.Where(x => x.IncludeInFooterColumn2).ToList())
                 {
                     <li><a href="@(Url.RouteUrl<Topic>(new { SeName = topic.SeName }))">@topic.Name</a></li>
