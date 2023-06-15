@@ -106,8 +106,6 @@ namespace Nop.Web.Controllers
         {
             var category = await _categoryService.GetCategoryByIdAsync(categoryId);
             
-            //Works but definitely need a better solution
-            ///////////////////////////////////////////////////////////////////////////////////////
             var urlReferrer = _webHelper.GetUrlReferrer();
             var index       = urlReferrer.IndexOf("?");
             if (index > 0)
@@ -119,7 +117,6 @@ namespace Nop.Web.Controllers
             {
                 return RedirectToAction("Index", "Faq", new{categoryId, categoryName = category.Name});
             }
-            //////////////////////////////////////////////////////////////////////////////////////
 
             if (!await CheckCategoryAvailabilityAsync(category))
                 return InvokeHttp404();
