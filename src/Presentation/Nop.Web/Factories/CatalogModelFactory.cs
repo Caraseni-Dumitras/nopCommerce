@@ -2043,6 +2043,59 @@ namespace Nop.Web.Factories
             return Task.CompletedTask;
         }
 
+        public async Task<TopMenuModel> PrepareFaqTopMenuModelAsync()
+        {
+            var cachedCategoriesModel = new List<CategorySimpleModel>();
+            //categories
+            if (!_catalogSettings.UseAjaxLoadMenu)
+            {
+                var categories = await _categoryService.GetAllCategoriesAsync(showHidden:true);
+                var entity     = categories.FirstOrDefault(c => c.Name == "Generic");
+                
+                if (entity != null)
+                {
+                    cachedCategoriesModel.Add(new CategorySimpleModel()
+                    {
+                        Id               = entity.Id,
+                        Name             = entity.Name,
+                        SeName           = await _urlRecordService.GetSeNameAsync(entity),
+                        IncludeInTopMenu = true
+                    });   
+                }
+                cachedCategoriesModel.AddRange( await PrepareCategorySimpleModelsAsync());
+            }
+
+            var store = await _storeContext.GetCurrentStoreAsync();
+
+            //top menu topics
+            var topicModel = await (await _topicService.GetAllTopicsAsync(store.Id, onlyIncludedInTopMenu: true))
+                                   .SelectAwait(async t => new TopMenuModel.TopicModel
+                                   {
+                                       Id     = t.Id,
+                                       Name   = await _localizationService.GetLocalizedAsync(t, x => x.Title),
+                                       SeName = await _urlRecordService.GetSeNameAsync(t)
+                                   }).ToListAsync();
+
+            var model = new TopMenuModel
+            {
+                Categories                   = cachedCategoriesModel,
+                Topics                       = topicModel,
+                NewProductsEnabled           = _catalogSettings.NewProductsEnabled,
+                BlogEnabled                  = _blogSettings.Enabled,
+                ForumEnabled                 = _forumSettings.ForumsEnabled,
+                DisplayHomepageMenuItem      = _displayDefaultMenuItemSettings.DisplayHomepageMenuItem,
+                DisplayNewProductsMenuItem   = _displayDefaultMenuItemSettings.DisplayNewProductsMenuItem,
+                DisplayProductSearchMenuItem = _displayDefaultMenuItemSettings.DisplayProductSearchMenuItem,
+                DisplayCustomerInfoMenuItem  = _displayDefaultMenuItemSettings.DisplayCustomerInfoMenuItem,
+                DisplayBlogMenuItem          = _displayDefaultMenuItemSettings.DisplayBlogMenuItem,
+                DisplayForumsMenuItem        = _displayDefaultMenuItemSettings.DisplayForumsMenuItem,
+                DisplayContactUsMenuItem     = _displayDefaultMenuItemSettings.DisplayContactUsMenuItem,
+                UseAjaxMenu                  = _catalogSettings.UseAjaxLoadMenu
+            };
+
+            return model;
+        }
+
         #endregion
     }
 }

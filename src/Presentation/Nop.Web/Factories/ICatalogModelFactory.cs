@@ -334,6 +334,8 @@ namespace Nop.Web.Factories
         /// <returns>A task that represents the asynchronous operation</returns>
         Task PreparePageSizeOptionsAsync(CatalogProductsModel pagingFilteringModel, CatalogProductsCommand command,
             bool allowCustomersToSelectPageSize, string pageSizeOptions, int fixedPageSize);
+        
+        Task<TopMenuModel> PrepareFaqTopMenuModelAsync();
 
         #endregion
     }

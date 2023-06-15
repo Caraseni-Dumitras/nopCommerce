@@ -15,7 +15,7 @@ public class FaqTopMenuViewComponent : NopViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync(int? productThumbPictureSize)
     {
-        var model = await _catalogModelFactory.PrepareTopMenuModelAsync();
+        var model = await _catalogModelFactory.PrepareFaqTopMenuModelAsync();
         return View(model);
     }
 }
