@@ -89,4 +89,18 @@ public class FaqController : BaseAdminController
 
         return View(model);
     }
+    [HttpPost]
+    public virtual async Task<IActionResult> Delete(int id)
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+            return AccessDeniedView();
+
+        var faq = await _faqService.GetFaqByIdAsync(id);
+        if (faq == null)
+            return RedirectToAction("List");
+
+        await _faqService.DeleteFaqAsync(faq);
+
+        return RedirectToAction("List");
+    }
 }
