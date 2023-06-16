@@ -17,4 +17,19 @@ public class FaqService : IFaqService
         var entities = await _faqRepository.Table.Where(f => f.CategoryId == categoryId).ToListAsync();
         return entities;
     }
+
+    public async Task<List<Faq>> GetAllFaqsAsync()
+    {
+        return await _faqRepository.Table.ToListAsync();
+    }
+
+    public async Task<Faq> GetFaqByIdAsync(int id)
+    {
+        return await _faqRepository.GetByIdAsync(id);
+    }
+
+    public async Task UpdateFaqAsync(Faq faq)
+    {
+        await _faqRepository.UpdateAsync(faq);
+    }
 }

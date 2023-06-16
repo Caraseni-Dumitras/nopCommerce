@@ -1,8 +1,10 @@
 ﻿using Nop.Core.Infrastructure;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Helpers;
+using Nop.Web.Areas.Admin.Models.FAQs;
 using Nop.Web.Framework.Factories;
 using Nop.Web.Infrastructure.Installation;
+using Nop.Web.Models.FAQs;
 
 namespace Nop.Web.Infrastructure
 {
@@ -82,6 +84,7 @@ namespace Nop.Web.Infrastructure
             services.AddScoped<IVendorAttributeModelFactory, VendorAttributeModelFactory>();
             services.AddScoped<IVendorModelFactory, VendorModelFactory>();
             services.AddScoped<IWidgetModelFactory, WidgetModelFactory>();
+            services.AddScoped<IFaqModelFactory, FaqModelFactory>();
 
             //factories
             services.AddScoped<Factories.IAddressModelFactory, Factories.AddressModelFactory>();

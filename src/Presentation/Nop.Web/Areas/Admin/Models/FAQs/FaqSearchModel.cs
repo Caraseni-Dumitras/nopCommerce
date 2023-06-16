@@ -4,5 +4,4 @@ namespace Nop.Web.Areas.Admin.Models.FAQs;
 
 public record FaqSearchModel : BaseSearchModel
 {
-    public int Id { get; set; }
 }

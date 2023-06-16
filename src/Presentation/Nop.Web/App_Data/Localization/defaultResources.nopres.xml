@@ -20085,4 +20085,13 @@
   <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.AnswerTitle">
     <Value>Answer Title</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.EditFaqDetails">
+    <Values>Edit Faq Details</Values>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.BackToList">
+    <Value>back to topic list</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.CategoryName">
+    <Value>Category</Value>
+  </LocaleResource>
 </Language>

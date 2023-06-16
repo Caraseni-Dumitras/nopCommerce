@@ -1,5 +1,4 @@
 @using Nop.Web.Areas.Admin.Models.FAQs
-@using Nop.Web.Models.FAQs
 @model FaqSearchModel
 
 @{
@@ -15,43 +14,54 @@
     <div class="float-right">
         @* <a asp-action="CreateForumGroup" class="btn btn-primary">@T("Admin.ContentManagement.Forums.ForumGroup.CreateForumGroup")</a> *@
         @* <a asp-action="CreateForum" class="btn btn-primary">@T("Admin.ContentManagement.Forums.Forum.CreateForum")</a> *@
+        @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.ForumListButtons, additionalData = Model })
     </div>
 </div>
 
 
-<div class="card card-default">
-                <div class="card-body" id="faqs-area">
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default">
+                    <div class="card-body">
 
-                    @await Html.PartialAsync("Table", new DataTablesModel
-                    {
-                        Name = "faqs-grid",
-                        RowIdBasedOnField = nameof(FaqModel.QuestionTitle),
-                        UrlRead = new DataUrl("List", "Faq", null),
-                        SearchButtonId = "search-faqs",
-                        Length = Model.PageSize,
-                        LengthMenu = Model.AvailablePageSizes,
-                        Filters = new List<FilterParameter>
-                        {
-                            
-                        },
-                        ColumnCollection = new List<ColumnProperty>
-                        {
-                            new ColumnProperty(nameof(FaqModel.QuestionTitle))
-                            {
-                                Title = T("Admin.ContentManagement.FAQ.Fields.QuestionTitle").Text
-                            },
-                            new ColumnProperty(nameof(FaqModel.AnswerTitle))
-                            {
-                                Title = T("Admin.ContentManagement.FAQ.Fields.AnswerTitle").Text
-                            },
-                            new ColumnProperty(nameof(FaqModel.Id))
-                            {
-                                Title = T("Admin.Common.Edit").Text,
-                                Width = "100",
-                                ClassName = NopColumnClassDefaults.Button + " column-edit",
-                                Render = new RenderCustom("renderColumnEdit")
-                            }
-                        }
-                    })
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                               {
+                                   Name = "faq-grid",
+                                   UrlRead = new DataUrl("List", "Faq", null),
+                                   PrimaryKeyColumn = nameof(FaqModel.Id),
+                                   Length = Model.PageSize,
+                                   LengthMenu = Model.AvailablePageSizes,
+                                   ColumnCollection = new List<ColumnProperty>
+                                   {
+                                       new ColumnProperty(nameof(FaqModel.QuestionTitle))
+                                       {
+                                           Title = T("Admin.ContentManagement.FAQ.Fields.QuestionTitle").Text,
+                                           Width = "400"
+                                       },
+                                       new ColumnProperty(nameof(FaqModel.AnswerTitle))
+                                       {
+                                           Title = T("Admin.ContentManagement.FAQ.Fields.AnswerTitle").Text,
+                                           Width = "400"
+                                       },
+                                       new ColumnProperty(nameof(FaqModel.CategoryName))
+                                       {
+                                           Title = T("Admin.ContentManagement.FAQ.Fields.CategoryName").Text,
+                                           Width = "50"
+                                       },
+                                       new ColumnProperty(nameof(FaqModel.Id))
+                                       {
+                                           Title = T("Admin.Common.Edit").Text,
+                                           Width = "50",
+                                           ClassName = NopColumnClassDefaults.Button,
+                                           Render = new RenderButtonEdit(new DataUrl("EditFaq"))
+                                       }
+                                   }
+                               })
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
