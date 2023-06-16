@@ -1,0 +1,57 @@
+@using Nop.Web.Areas.Admin.Models.FAQs
+@using Nop.Web.Models.FAQs
+@model FaqSearchModel
+
+@{
+    ViewBag.PageTitle = T("Admin.ContentManagement.Faq").Text;
+
+    NopHtml.SetActiveMenuItemSystemName("Manage faq");
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.ContentManagement.Faq")
+    </h1>
+    <div class="float-right">
+        @* <a asp-action="CreateForumGroup" class="btn btn-primary">@T("Admin.ContentManagement.Forums.ForumGroup.CreateForumGroup")</a> *@
+        @* <a asp-action="CreateForum" class="btn btn-primary">@T("Admin.ContentManagement.Forums.Forum.CreateForum")</a> *@
+    </div>
+</div>
+
+
+<div class="card card-default">
+                <div class="card-body" id="faqs-area">
+
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "faqs-grid",
+                        RowIdBasedOnField = nameof(FaqModel.QuestionTitle),
+                        UrlRead = new DataUrl("List", "Faq", null),
+                        SearchButtonId = "search-faqs",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        Filters = new List<FilterParameter>
+                        {
+                            
+                        },
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(FaqModel.QuestionTitle))
+                            {
+                                Title = T("Admin.ContentManagement.FAQ.Fields.QuestionTitle").Text
+                            },
+                            new ColumnProperty(nameof(FaqModel.AnswerTitle))
+                            {
+                                Title = T("Admin.ContentManagement.FAQ.Fields.AnswerTitle").Text
+                            },
+                            new ColumnProperty(nameof(FaqModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "100",
+                                ClassName = NopColumnClassDefaults.Button + " column-edit",
+                                Render = new RenderCustom("renderColumnEdit")
+                            }
+                        }
+                    })
+                </div>
+            </div>

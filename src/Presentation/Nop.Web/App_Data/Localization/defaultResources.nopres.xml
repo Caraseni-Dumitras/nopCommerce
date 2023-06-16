@@ -20076,4 +20076,13 @@
   <LocaleResource Name="Wishlist.YourWishlistURL">
     <Value>Your wishlist URL for sharing</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.Faq">
+    <Value>FAQ</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.QuestionTitle">
+    <Value>Question Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.AnswerTitle">
+    <Value>Answer Title</Value>
+  </LocaleResource>
 </Language>
