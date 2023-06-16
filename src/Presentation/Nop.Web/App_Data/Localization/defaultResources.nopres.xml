@@ -20082,16 +20082,28 @@
   <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.QuestionTitle">
     <Value>Question Title</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.QuestionDescription">
+    <Value>Question Description</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.AnswerTitle">
     <Value>Answer Title</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.AnswerDescription">
+    <Value>Answer Description</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.CategoryName">
+    <Value>Category</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.FAQ.EditFaqDetails">
     <Values>Edit Faq Details</Values>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.FAQ.BackToList">
-    <Value>back to topic list</Value>
+    <Value>back to faq list</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.CategoryName">
-    <Value>Category</Value>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.Categories">
+    <Value>Categories</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.NoCategoriesAvailable">
+    <Value>No categories available.</Value>
   </LocaleResource>
 </Language>

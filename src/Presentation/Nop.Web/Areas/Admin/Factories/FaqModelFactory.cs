@@ -8,13 +8,15 @@ namespace Nop.Web.Areas.Admin.Factories;
 
 public class FaqModelFactory : IFaqModelFactory
 {
-    protected readonly IFaqService      _faqService;
-    protected readonly ICategoryService _categoryService;
+    protected readonly IFaqService            _faqService;
+    protected readonly ICategoryService       _categoryService;
+    protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
 
-    public FaqModelFactory(IFaqService faqService, ICategoryService categoryService)
+    public FaqModelFactory(IFaqService faqService, ICategoryService categoryService, IBaseAdminModelFactory baseAdminModelFactory)
     {
-        _faqService           = faqService;
-        _categoryService = categoryService;
+        _faqService                 = faqService;
+        _categoryService            = categoryService;
+        _baseAdminModelFactory = baseAdminModelFactory;
     }
 
     public async Task<FaqSearchModel> PrepareFaqSearchModelAsync(FaqSearchModel searchModel)
@@ -60,9 +62,16 @@ public class FaqModelFactory : IFaqModelFactory
 
     public async Task<FaqModel> PrepareFaqModelAsync(Faq faq)
     {
+        var categories   = await _categoryService.GetAllCategoriesAsync(showHidden:true);
+        var categoriesIds = new List<int>();
+        foreach (var item in categories)
+        {
+            categoriesIds.Add(item.Id);
+        }
+        
         var category = await _categoryService.GetCategoryByIdAsync(faq.CategoryId);
         
-        return new FaqModel()
+        var model = new FaqModel()
         {
             Id                  = faq.Id,
             QuestionTitle       = faq.QuestionTitle,
@@ -70,7 +79,17 @@ public class FaqModelFactory : IFaqModelFactory
             AnswerTitle         = faq.AnswerTitle,
             AnswerDescription   = faq.AnswerDescription,
             CategoryId          = faq.CategoryId,
-            CategoryName        = category.Name
+            CategoryName        = category.Name,
+            SelectedCategoryIds = categoriesIds
         };
+        
+        await _baseAdminModelFactory.PrepareCategoriesAsync(model.AvailableCategories, false);
+        foreach (var categoryItem in model.AvailableCategories)
+        {
+            categoryItem.Selected = int.TryParse(categoryItem.Value, out var categoryId)
+                                    && model.SelectedCategoryIds.Contains(categoryId);
+        }
+
+        return model;
     }
 }

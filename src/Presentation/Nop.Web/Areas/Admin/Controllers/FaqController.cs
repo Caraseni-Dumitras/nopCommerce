@@ -48,7 +48,7 @@ public class FaqController : BaseAdminController
     
     public virtual async Task<IActionResult> Edit(int id)
     {
-        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
             return AccessDeniedView();
 
         var faq = await _faqService.GetFaqByIdAsync(id);
@@ -60,34 +60,33 @@ public class FaqController : BaseAdminController
         return View(model);
     }
 
-        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-        public virtual async Task<IActionResult> Edit(FaqModel model, bool continueEditing)
-        {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTopics))
-                return AccessDeniedView();
+    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    public virtual async Task<IActionResult> Edit(FaqModel model, bool continueEditing)
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
+            return AccessDeniedView();
 
-            //try to get a topic with the specified id
-            var faq = await _faqService.GetFaqByIdAsync(model.Id);
-            if (faq == null)
+        var faq = await _faqService.GetFaqByIdAsync(model.Id);
+        if (faq == null)
+            return RedirectToAction("List");
+
+        if (ModelState.IsValid)
+        {
+            faq.QuestionTitle       = model.QuestionTitle;
+            faq.QuestionDescription = model.QuestionDescription;
+            faq.AnswerTitle         = model.AnswerTitle;
+            faq.CategoryId          = model.CategoryId;
+                
+            await _faqService.UpdateFaqAsync(faq);
+
+            if (!continueEditing)
                 return RedirectToAction("List");
 
-            if (ModelState.IsValid)
-            {
-                faq.QuestionTitle       = model.QuestionTitle;
-                faq.QuestionDescription = model.QuestionDescription;
-                faq.AnswerTitle         = model.AnswerTitle;
-                faq.CategoryId          = model.CategoryId;
-                
-                await _faqService.UpdateFaqAsync(faq);
-
-                if (!continueEditing)
-                    return RedirectToAction("List");
-
-                return RedirectToAction("Edit", new { id = faq.Id });
-            }
-
-            model = await _faqModelFactory.PrepareFaqModelAsync(faq);
-
-            return View(model);
+            return RedirectToAction("Edit", new { id = faq.Id });
         }
+
+        model = await _faqModelFactory.PrepareFaqModelAsync(faq);
+
+        return View(model);
+    }
 }
