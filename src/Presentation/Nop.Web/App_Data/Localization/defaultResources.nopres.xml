@@ -20106,4 +20106,10 @@
   <LocaleResource Name="Admin.ContentManagement.FAQ.Fields.NoCategoriesAvailable">
     <Value>No categories available.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.CreateFaq">
+    <Value>Add New Faq</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.Create">
+    <Value>Crete New Faq</Value>
+  </LocaleResource>
 </Language>

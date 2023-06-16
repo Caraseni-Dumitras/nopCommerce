@@ -37,4 +37,9 @@ public class FaqService : IFaqService
     {
         await _faqRepository.DeleteAsync(faq, false);
     }
+
+    public async Task InsertFaqAsync(Faq faq)
+    {
+        await _faqRepository.InsertAsync(faq, false);
+    }
 }

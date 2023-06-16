@@ -60,36 +60,46 @@ public class FaqModelFactory : IFaqModelFactory
         return model;
     }
 
-    public async Task<FaqModel> PrepareFaqModelAsync(Faq faq)
+    public async Task<FaqModel> PrepareFaqModelAsync(FaqModel model, Faq faq)
     {
-        var categories   = await _categoryService.GetAllCategoriesAsync(showHidden:true);
-        var categoriesIds = new List<int>();
-        foreach (var item in categories)
+        var categories = await _categoryService.GetAllCategoriesAsync(showHidden:true);
+        if (faq != null)
         {
-            categoriesIds.Add(item.Id);
+            var categoriesIds = new List<int>();
+            foreach (var item in categories)
+            {
+                categoriesIds.Add(item.Id);
+            }
+        
+            var category = await _categoryService.GetCategoryByIdAsync(faq.CategoryId);
+        
+            model = new FaqModel()
+            {
+                Id                  = faq.Id,
+                QuestionTitle       = faq.QuestionTitle,
+                QuestionDescription = faq.QuestionDescription,
+                AnswerTitle         = faq.AnswerTitle,
+                AnswerDescription   = faq.AnswerDescription,
+                CategoryId          = faq.CategoryId,
+                CategoryName        = category.Name,
+                SelectedCategoryIds = categoriesIds
+            };
         }
-        
-        var category = await _categoryService.GetCategoryByIdAsync(faq.CategoryId);
-        
-        var model = new FaqModel()
+
+        if (faq == null)
         {
-            Id                  = faq.Id,
-            QuestionTitle       = faq.QuestionTitle,
-            QuestionDescription = faq.QuestionDescription,
-            AnswerTitle         = faq.AnswerTitle,
-            AnswerDescription   = faq.AnswerDescription,
-            CategoryId          = faq.CategoryId,
-            CategoryName        = category.Name,
-            SelectedCategoryIds = categoriesIds
-        };
-        
+            var genericCategory = categories.FirstOrDefault(c => c.Name == "Generic");
+            model.CategoryId   = genericCategory.Id;
+            model.CategoryName = genericCategory.Name;
+        }
+
         await _baseAdminModelFactory.PrepareCategoriesAsync(model.AvailableCategories, false);
         foreach (var categoryItem in model.AvailableCategories)
         {
             categoryItem.Selected = int.TryParse(categoryItem.Value, out var categoryId)
                                     && model.SelectedCategoryIds.Contains(categoryId);
-        }
-
+        }  
+        
         return model;
     }
 }

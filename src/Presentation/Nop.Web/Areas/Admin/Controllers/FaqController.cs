@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Nop.Core.Domain.FAQs;
 using Nop.Services.FAQs;
 using Nop.Services.Security;
 using Nop.Web.Areas.Admin.Factories;
@@ -55,7 +56,7 @@ public class FaqController : BaseAdminController
         if (faq == null)
             return RedirectToAction("List");
 
-        var model = await _faqModelFactory.PrepareFaqModelAsync(faq);
+        var model = await _faqModelFactory.PrepareFaqModelAsync(null, faq);
 
         return View(model);
     }
@@ -75,6 +76,7 @@ public class FaqController : BaseAdminController
             faq.QuestionTitle       = model.QuestionTitle;
             faq.QuestionDescription = model.QuestionDescription;
             faq.AnswerTitle         = model.AnswerTitle;
+            faq.AnswerDescription   = model.AnswerDescription;
             faq.CategoryId          = model.CategoryId;
                 
             await _faqService.UpdateFaqAsync(faq);
@@ -85,10 +87,47 @@ public class FaqController : BaseAdminController
             return RedirectToAction("Edit", new { id = faq.Id });
         }
 
-        model = await _faqModelFactory.PrepareFaqModelAsync(faq);
+        model = await _faqModelFactory.PrepareFaqModelAsync(model, faq);
 
         return View(model);
     }
+    
+    public virtual async Task<IActionResult> Create()
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+            return AccessDeniedView();
+
+        var model = await _faqModelFactory.PrepareFaqModelAsync(new FaqModel(), null);
+
+        return View(model);
+    }
+
+    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    public virtual async Task<IActionResult> Create(FaqModel model, bool continueEditing)
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+            return AccessDeniedView();
+
+        var faq = new Faq();
+        
+        if (ModelState.IsValid)
+        {
+            faq.QuestionTitle       = model.QuestionTitle;
+            faq.QuestionDescription = model.QuestionDescription;
+            faq.AnswerTitle         = model.AnswerTitle;
+            faq.AnswerDescription   = model.AnswerDescription;
+            faq.CategoryId          = model.CategoryId;
+            
+            await _faqService.InsertFaqAsync(faq);
+
+            return continueEditing ? RedirectToAction("Edit", new { faq.Id }) : RedirectToAction("List");
+        }
+
+        model = await _faqModelFactory.PrepareFaqModelAsync(model, null);
+
+        return View(model);
+    }
+    
     [HttpPost]
     public virtual async Task<IActionResult> Delete(int id)
     {

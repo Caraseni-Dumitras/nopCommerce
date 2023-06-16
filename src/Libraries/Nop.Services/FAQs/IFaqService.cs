@@ -9,4 +9,5 @@ public interface IFaqService
     Task<Faq>       GetFaqByIdAsync(int id);
     Task            UpdateFaqAsync(Faq  faq);
     Task            DeleteFaqAsync(Faq  faq);
+    Task            InsertFaqAsync(Faq  faq);
 }
