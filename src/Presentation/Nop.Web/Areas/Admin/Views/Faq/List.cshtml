@@ -1,0 +1,66 @@
+@using Nop.Web.Areas.Admin.Models.FAQs
+@model FaqSearchModel
+
+@{
+    ViewBag.PageTitle = T("Admin.ContentManagement.Faq").Text;
+
+    NopHtml.SetActiveMenuItemSystemName("Manage faq");
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.ContentManagement.Faq")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">@T("Admin.ContentManagement.FAQ.CreateFaq")</a>
+        @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.ForumListButtons, additionalData = Model })
+    </div>
+</div>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default">
+                    <div class="card-body">
+
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                               {
+                                   Name = "faq-grid",
+                                   UrlRead = new DataUrl("List", "Faq", null),
+                                   PrimaryKeyColumn = nameof(FaqModel.Id),
+                                   Length = Model.PageSize,
+                                   LengthMenu = Model.AvailablePageSizes,
+                                   ColumnCollection = new List<ColumnProperty>
+                                   {
+                                       new ColumnProperty(nameof(FaqModel.QuestionTitle))
+                                       {
+                                           Title = T("Admin.ContentManagement.FAQ.Fields.QuestionTitle").Text,
+                                           Width = "400"
+                                       },
+                                       new ColumnProperty(nameof(FaqModel.AnswerTitle))
+                                       {
+                                           Title = T("Admin.ContentManagement.FAQ.Fields.AnswerTitle").Text,
+                                           Width = "400"
+                                       },
+                                       new ColumnProperty(nameof(FaqModel.CategoryName))
+                                       {
+                                           Title = T("Admin.ContentManagement.FAQ.Fields.CategoryName").Text,
+                                           Width = "50"
+                                       },
+                                       new ColumnProperty(nameof(FaqModel.Id))
+                                       {
+                                           Title = T("Admin.Common.Edit").Text,
+                                           Width = "50",
+                                           ClassName = NopColumnClassDefaults.Button,
+                                           Render = new RenderButtonEdit(new DataUrl("Edit"))
+                                       }
+                                   }
+                               })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

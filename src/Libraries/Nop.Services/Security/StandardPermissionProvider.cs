@@ -36,6 +36,7 @@ namespace Nop.Services.Security
         public static readonly PermissionRecord ManageWidgets = new() { Name = "Admin area. Manage Widgets", SystemName = "ManageWidgets", Category = "Content Management" };
         public static readonly PermissionRecord ManageTopics = new() { Name = "Admin area. Manage Topics", SystemName = "ManageTopics", Category = "Content Management" };
         public static readonly PermissionRecord ManageForums = new() { Name = "Admin area. Manage Forums", SystemName = "ManageForums", Category = "Content Management" };
+        public static readonly PermissionRecord ManageFaq = new() { Name = "Admin area. Manage Faq", SystemName = "ManageFaq", Category = "Content Management" };
         public static readonly PermissionRecord ManageMessageTemplates = new() { Name = "Admin area. Manage Message Templates", SystemName = "ManageMessageTemplates", Category = "Content Management" };
         public static readonly PermissionRecord ManageCountries = new() { Name = "Admin area. Manage Countries", SystemName = "ManageCountries", Category = "Configuration" };
         public static readonly PermissionRecord ManageLanguages = new() { Name = "Admin area. Manage Languages", SystemName = "ManageLanguages", Category = "Configuration" };
@@ -104,6 +105,7 @@ namespace Nop.Services.Security
                 ManageWidgets,
                 ManageTopics,
                 ManageForums,
+                ManageFaq,
                 ManageMessageTemplates,
                 ManageCountries,
                 ManageLanguages,
