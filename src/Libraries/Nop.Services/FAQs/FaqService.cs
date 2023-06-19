@@ -9,7 +9,7 @@ public class FaqService : IFaqService
 
     public FaqService(IRepository<Faq> faqRepository)
     {
-        _faqRepository = faqRepository;
+        _faqRepository        = faqRepository;
     }
 
     public async Task<List<Faq>> GetAllFaqByCategoryIdAsync(int categoryId)
@@ -18,8 +18,12 @@ public class FaqService : IFaqService
         return entities;
     }
 
-    public async Task<List<Faq>> GetAllFaqsAsync()
+    public async Task<List<Faq>> GetAllFaqsAsync(List<int> categoryIds)
     {
+        if (categoryIds.Any())
+        {
+            return await _faqRepository.Table.Where(f => categoryIds.Contains(f.CategoryId)).ToListAsync();
+        }
         return await _faqRepository.Table.ToListAsync();
     }
 

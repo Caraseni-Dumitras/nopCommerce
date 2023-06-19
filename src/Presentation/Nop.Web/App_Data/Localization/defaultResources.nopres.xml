@@ -20112,4 +20112,10 @@
   <LocaleResource Name="Admin.ContentManagement.FAQ.Create">
     <Value>Crete New Faq</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.SearchCategory">
+    <Value>Category</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.SearchIncludeSubCategories">
+    <Value>Search subcategories</Value>
+  </LocaleResource>
 </Language>
