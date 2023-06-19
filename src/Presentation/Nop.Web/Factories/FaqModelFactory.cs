@@ -45,6 +45,6 @@ public class FaqModelFactory : IFaqModelFactory
             faqIndexModels.Add(model);
         }
 
-        return new FaqIndexModel() { FaqModels = faqIndexModels };
+        return new FaqIndexModel() { FaqModels = faqIndexModels.OrderBy(f => f.QuestionTitle).ToList() };
     }
 }
