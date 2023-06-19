@@ -23,6 +23,8 @@ public class FaqModelFactory : IFaqModelFactory
     {
         if (searchModel == null)
             throw new ArgumentNullException(nameof(searchModel));
+        
+        await _baseAdminModelFactory.PrepareCategoriesAsync(searchModel.AvailableCategories);
 
         searchModel.SetGridPageSize();
 
@@ -34,7 +36,19 @@ public class FaqModelFactory : IFaqModelFactory
         if (searchModel == null)
             throw new ArgumentNullException(nameof(searchModel));
 
-        var faqs = await _faqService.GetAllFaqsAsync();
+        var categoryIds = new List<int>();
+        if (searchModel.SearchCategoryId > 0)
+        {
+            categoryIds.Add(searchModel.SearchCategoryId);
+            if (searchModel.SearchIncludeSubCategories)
+            {
+                var childCategoryIds = await _categoryService.GetChildCategoryIdsAsync(parentCategoryId: searchModel.SearchCategoryId, showHidden: true);
+                categoryIds.AddRange(childCategoryIds);
+            }
+        }
+
+        var faqs = await _faqService.GetAllFaqsAsync(categoryIds);
+        
         var pagedFaqs = faqs.ToPagedList(searchModel);
 
         var model = await new FaqListModel().PrepareToGridAsync(searchModel, pagedFaqs, () =>
