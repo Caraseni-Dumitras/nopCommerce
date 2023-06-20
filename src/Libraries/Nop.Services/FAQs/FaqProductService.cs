@@ -22,4 +22,10 @@ public class FaqProductService : IFaqProductService
         var entities = await _faqProductRepository.Table.Where(f => f.ProductId == productId).ToListAsync();
         return entities;
     }
+
+    public async Task<List<FaqProductMapping>> GetAllFaqWithoutProductAsync()
+    {
+        var entities = await _faqProductRepository.Table.Where(f => f.ProductId == 0).ToListAsync();
+        return entities;
+    }
 }

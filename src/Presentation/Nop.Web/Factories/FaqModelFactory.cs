@@ -1,5 +1,6 @@
 using LinqToDB.Common;
 using Nop.Core.Domain.Catalog;
+using Nop.Core.Domain.FAQs;
 using Nop.Data;
 using Nop.Services.Catalog;
 using Nop.Services.FAQs;
@@ -33,9 +34,26 @@ public class FaqModelFactory : IFaqModelFactory
         }
 
         var faqIndexEntities = await _faqService.GetAllFaqByCategoryIdAsync(categoryId);
+
+        var faqProduct = await _faqProductService.GetAllFaqWithoutProductAsync();
+        var faqIds     = new List<int>();
+        foreach (var item in faqProduct)
+        {
+            faqIds.Add(item.FaqId);
+        }
+
+        var faqIndexEntitiesResponse = new List<Faq>();
+        foreach (var item in faqIndexEntities)
+        {
+            if (faqIds.Contains(item.Id))
+            {
+                faqIndexEntitiesResponse.Add(item);
+            }
+        }
+        
         var faqIndexModels   = new List<FaqModel>();
 
-        foreach (var entity in faqIndexEntities)
+        foreach (var entity in faqIndexEntitiesResponse)
         {
             var model = new FaqModel()
             {
