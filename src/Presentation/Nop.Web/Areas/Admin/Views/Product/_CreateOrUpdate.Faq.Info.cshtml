@@ -8,13 +8,13 @@
             @await Html.PartialAsync("Table", new DataTablesModel
                    {
                        Name = "faq-grid", 
-                       UrlRead = new DataUrl("List", "Faq", null), 
+                       UrlRead = new DataUrl("FaqList", "Product", null), 
                        PrimaryKeyColumn = nameof(FaqModel.Id), 
                        Length = Model.FaqSearchModel.PageSize, 
                        LengthMenu = Model.FaqSearchModel.AvailablePageSizes,
                        Filters = new List<FilterParameter>
                        {
-                           new FilterParameter(nameof(Model.FaqSearchModel.SearchCategoryId), Model.SelectedCategoryIds.FirstOrDefault())
+                           new FilterParameter(nameof(Model.FaqSearchModel.SearchProductId), Model.Id),
                        },
                        ColumnCollection = new List<ColumnProperty>
                        {
@@ -43,6 +43,15 @@
                        }
                    })
         </div>
+    </div>
+    <div class="card-footer">
+        <a asp-action="FaqCreate"
+           asp-route-productId="@Model.Id"
+           class="btn btn-primary">
+            <i class="fas fa-plus-square"></i>
+            Add FAQ
+        </a>
+
     </div>
 </div>
 @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.ProductDetailsProductAttributesInfoBottom, additionalData = Model })

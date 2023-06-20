@@ -15,6 +15,8 @@ public record FaqSearchModel : BaseSearchModel
     public int SearchCategoryId { get; set; }
 
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.SearchIncludeSubCategories")]
-    public bool SearchIncludeSubCategories { get; set; }
+    public bool SearchIncludeSubCategories { get;           set; }
     public IList<SelectListItem> AvailableCategories { get; set; }
+    public int SearchProductId     { get; set; }
+    public bool SearchByProductId   { get; set; }
 }

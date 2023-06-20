@@ -25,6 +25,7 @@ public record FaqModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.CategoryName")]
     public string CategoryName { get; set; }
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.Categories")]
-    public IList<int> SelectedCategoryIds { get; set; }
+    public IList<int> SelectedCategoryIds { get;            set; }
     public IList<SelectListItem> AvailableCategories { get; set; }
+    public int                   ProductId           { get; set; }
 }
