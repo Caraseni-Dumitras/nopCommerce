@@ -46,4 +46,9 @@ public class FaqService : IFaqService
     {
         await _faqRepository.InsertAsync(faq, false);
     }
+
+    public async Task<IList<Faq>> GetAllFaqByIdsAsync(List<int> ids)
+    {
+        return await _faqRepository.GetByIdsAsync(ids);
+    }
 }

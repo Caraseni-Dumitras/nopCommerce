@@ -163,6 +163,9 @@
                     @await Html.PartialAsync("_ProductSpecifications", Model.ProductSpecificationModel)
                     @await Html.PartialAsync("_ProductTags", Model.ProductTags)
                 </div>
+                <div>
+                    @await Component.InvokeAsync(typeof(FaqProductViewComponent), Model.Id)
+                </div>
                 @await Component.InvokeAsync(typeof(ProductsAlsoPurchasedViewComponent), new { productId = Model.Id })
                 @await Component.InvokeAsync(typeof(RelatedProductsViewComponent), new { productId = Model.Id })
             </div>

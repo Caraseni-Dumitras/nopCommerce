@@ -41,7 +41,8 @@ namespace Nop.Data.Mapping
             { typeof(ForumTopic), "Forums_Topic" },
             { typeof(PrivateMessage), "Forums_PrivateMessage" },
             { typeof(NewsItem), "News" },
-            { typeof(Faq), "faq" }
+            { typeof(Faq), "faq" },
+            { typeof(FaqProductMapping), "faq_product_mapping" }
         };
 
         public Dictionary<(Type, string), string> ColumnName => new()

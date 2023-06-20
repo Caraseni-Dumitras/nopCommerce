@@ -5,6 +5,7 @@ using Nop.Core;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Discounts;
+using Nop.Core.Domain.FAQs;
 using Nop.Core.Domain.Media;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Vendors;
@@ -16,6 +17,7 @@ using Nop.Services.Configuration;
 using Nop.Services.Customers;
 using Nop.Services.Discounts;
 using Nop.Services.ExportImport;
+using Nop.Services.FAQs;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Media;
@@ -27,6 +29,7 @@ using Nop.Services.Shipping;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Catalog;
+using Nop.Web.Areas.Admin.Models.FAQs;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Mvc;
 using Nop.Web.Framework.Mvc.Filters;
@@ -39,123 +42,129 @@ namespace Nop.Web.Areas.Admin.Controllers
     {
         #region Fields
 
-        protected readonly IAclService _aclService;
+        protected readonly IAclService                     _aclService;
         protected readonly IBackInStockSubscriptionService _backInStockSubscriptionService;
-        protected readonly ICategoryService _categoryService;
-        protected readonly ICopyProductService _copyProductService;
-        protected readonly ICustomerActivityService _customerActivityService;
-        protected readonly ICustomerService _customerService;
-        protected readonly IDiscountService _discountService;
-        protected readonly IDownloadService _downloadService;
-        protected readonly IExportManager _exportManager;
-        protected readonly IGenericAttributeService _genericAttributeService;
-        protected readonly IHttpClientFactory _httpClientFactory;
-        protected readonly IImportManager _importManager;
-        protected readonly ILanguageService _languageService;
-        protected readonly ILocalizationService _localizationService;
-        protected readonly ILocalizedEntityService _localizedEntityService;
-        protected readonly IManufacturerService _manufacturerService;
-        protected readonly INopFileProvider _fileProvider;
-        protected readonly INotificationService _notificationService;
-        protected readonly IPdfService _pdfService;
-        protected readonly IPermissionService _permissionService;
-        protected readonly IPictureService _pictureService;
-        protected readonly IProductAttributeFormatter _productAttributeFormatter;
-        protected readonly IProductAttributeParser _productAttributeParser;
-        protected readonly IProductAttributeService _productAttributeService;
-        protected readonly IProductModelFactory _productModelFactory;
-        protected readonly IProductService _productService;
-        protected readonly IProductTagService _productTagService;
-        protected readonly ISettingService _settingService;
-        protected readonly IShippingService _shippingService;
-        protected readonly IShoppingCartService _shoppingCartService;
-        protected readonly ISpecificationAttributeService _specificationAttributeService;
-        protected readonly IStoreContext _storeContext;
-        protected readonly IUrlRecordService _urlRecordService;
-        protected readonly IVideoService _videoService;
-        protected readonly IWebHelper _webHelper;
-        protected readonly IWorkContext _workContext;
-        protected readonly VendorSettings _vendorSettings;
+        protected readonly ICategoryService                _categoryService;
+        protected readonly ICopyProductService             _copyProductService;
+        protected readonly ICustomerActivityService        _customerActivityService;
+        protected readonly ICustomerService                _customerService;
+        protected readonly IDiscountService                _discountService;
+        protected readonly IDownloadService                _downloadService;
+        protected readonly IExportManager                  _exportManager;
+        protected readonly IGenericAttributeService        _genericAttributeService;
+        protected readonly IHttpClientFactory              _httpClientFactory;
+        protected readonly IImportManager                  _importManager;
+        protected readonly ILanguageService                _languageService;
+        protected readonly ILocalizationService            _localizationService;
+        protected readonly ILocalizedEntityService         _localizedEntityService;
+        protected readonly IManufacturerService            _manufacturerService;
+        protected readonly INopFileProvider                _fileProvider;
+        protected readonly INotificationService            _notificationService;
+        protected readonly IPdfService                     _pdfService;
+        protected readonly IPermissionService              _permissionService;
+        protected readonly IPictureService                 _pictureService;
+        protected readonly IProductAttributeFormatter      _productAttributeFormatter;
+        protected readonly IProductAttributeParser         _productAttributeParser;
+        protected readonly IProductAttributeService        _productAttributeService;
+        protected readonly IProductModelFactory            _productModelFactory;
+        protected readonly IProductService                 _productService;
+        protected readonly IProductTagService              _productTagService;
+        protected readonly ISettingService                 _settingService;
+        protected readonly IShippingService                _shippingService;
+        protected readonly IShoppingCartService            _shoppingCartService;
+        protected readonly ISpecificationAttributeService  _specificationAttributeService;
+        protected readonly IStoreContext                   _storeContext;
+        protected readonly IUrlRecordService               _urlRecordService;
+        protected readonly IVideoService                   _videoService;
+        protected readonly IWebHelper                      _webHelper;
+        protected readonly IWorkContext                    _workContext;
+        protected readonly VendorSettings                  _vendorSettings;
+        protected readonly IFaqModelFactory                _faqModelFactory;
+        protected readonly IFaqService                     _faqService;
+        protected readonly IFaqProductService              _faqProductService;
 
         #endregion
 
         #region Ctor
 
         public ProductController(IAclService aclService,
-            IBackInStockSubscriptionService backInStockSubscriptionService,
-            ICategoryService categoryService,
-            ICopyProductService copyProductService,
-            ICustomerActivityService customerActivityService,
-            ICustomerService customerService,
-            IDiscountService discountService,
-            IDownloadService downloadService,
-            IExportManager exportManager,
-            IGenericAttributeService genericAttributeService,
-            IHttpClientFactory httpClientFactory,
-            IImportManager importManager,
-            ILanguageService languageService,
-            ILocalizationService localizationService,
-            ILocalizedEntityService localizedEntityService,
-            IManufacturerService manufacturerService,
-            INopFileProvider fileProvider,
-            INotificationService notificationService,
-            IPdfService pdfService,
-            IPermissionService permissionService,
-            IPictureService pictureService,
-            IProductAttributeFormatter productAttributeFormatter,
-            IProductAttributeParser productAttributeParser,
-            IProductAttributeService productAttributeService,
-            IProductModelFactory productModelFactory,
-            IProductService productService,
-            IProductTagService productTagService,
-            ISettingService settingService,
-            IShippingService shippingService,
-            IShoppingCartService shoppingCartService,
-            ISpecificationAttributeService specificationAttributeService,
-            IStoreContext storeContext,
-            IUrlRecordService urlRecordService,
-            IVideoService videoService,
-            IWebHelper webHelper,
-            IWorkContext workContext,
-            VendorSettings vendorSettings)
+            IBackInStockSubscriptionService  backInStockSubscriptionService,
+            ICategoryService                 categoryService,
+            ICopyProductService              copyProductService,
+            ICustomerActivityService         customerActivityService,
+            ICustomerService                 customerService,
+            IDiscountService                 discountService,
+            IDownloadService                 downloadService,
+            IExportManager                   exportManager,
+            IGenericAttributeService         genericAttributeService,
+            IHttpClientFactory               httpClientFactory,
+            IImportManager                   importManager,
+            ILanguageService                 languageService,
+            ILocalizationService             localizationService,
+            ILocalizedEntityService          localizedEntityService,
+            IManufacturerService             manufacturerService,
+            INopFileProvider                 fileProvider,
+            INotificationService             notificationService,
+            IPdfService                      pdfService,
+            IPermissionService               permissionService,
+            IPictureService                  pictureService,
+            IProductAttributeFormatter       productAttributeFormatter,
+            IProductAttributeParser          productAttributeParser,
+            IProductAttributeService         productAttributeService,
+            IProductModelFactory             productModelFactory,
+            IProductService                  productService,
+            IProductTagService               productTagService,
+            ISettingService                  settingService,
+            IShippingService                 shippingService,
+            IShoppingCartService             shoppingCartService,
+            ISpecificationAttributeService   specificationAttributeService,
+            IStoreContext                    storeContext,
+            IUrlRecordService                urlRecordService,
+            IVideoService                    videoService,
+            IWebHelper                       webHelper,
+            IWorkContext                     workContext,
+            VendorSettings                   vendorSettings, IFaqModelFactory faqModelFactory, IFaqService faqService, IFaqProductService faqProductService)
         {
-            _aclService = aclService;
+            _aclService                     = aclService;
             _backInStockSubscriptionService = backInStockSubscriptionService;
-            _categoryService = categoryService;
-            _copyProductService = copyProductService;
-            _customerActivityService = customerActivityService;
-            _customerService = customerService;
-            _discountService = discountService;
-            _downloadService = downloadService;
-            _exportManager = exportManager;
-            _genericAttributeService = genericAttributeService;
-            _httpClientFactory = httpClientFactory;
-            _importManager = importManager;
-            _languageService = languageService;
-            _localizationService = localizationService;
-            _localizedEntityService = localizedEntityService;
-            _manufacturerService = manufacturerService;
-            _fileProvider = fileProvider;
-            _notificationService = notificationService;
-            _pdfService = pdfService;
-            _permissionService = permissionService;
-            _pictureService = pictureService;
-            _productAttributeFormatter = productAttributeFormatter;
-            _productAttributeParser = productAttributeParser;
-            _productAttributeService = productAttributeService;
-            _productModelFactory = productModelFactory;
-            _productService = productService;
-            _productTagService = productTagService;
-            _settingService = settingService;
-            _shippingService = shippingService;
-            _shoppingCartService = shoppingCartService;
-            _specificationAttributeService = specificationAttributeService;
-            _storeContext = storeContext;
-            _urlRecordService = urlRecordService;
-            _videoService = videoService;
-            _webHelper = webHelper;
-            _workContext = workContext;
-            _vendorSettings = vendorSettings;
+            _categoryService                = categoryService;
+            _copyProductService             = copyProductService;
+            _customerActivityService        = customerActivityService;
+            _customerService                = customerService;
+            _discountService                = discountService;
+            _downloadService                = downloadService;
+            _exportManager                  = exportManager;
+            _genericAttributeService        = genericAttributeService;
+            _httpClientFactory              = httpClientFactory;
+            _importManager                  = importManager;
+            _languageService                = languageService;
+            _localizationService            = localizationService;
+            _localizedEntityService         = localizedEntityService;
+            _manufacturerService            = manufacturerService;
+            _fileProvider                   = fileProvider;
+            _notificationService            = notificationService;
+            _pdfService                     = pdfService;
+            _permissionService              = permissionService;
+            _pictureService                 = pictureService;
+            _productAttributeFormatter      = productAttributeFormatter;
+            _productAttributeParser         = productAttributeParser;
+            _productAttributeService        = productAttributeService;
+            _productModelFactory            = productModelFactory;
+            _productService                 = productService;
+            _productTagService              = productTagService;
+            _settingService                 = settingService;
+            _shippingService                = shippingService;
+            _shoppingCartService            = shoppingCartService;
+            _specificationAttributeService  = specificationAttributeService;
+            _storeContext                   = storeContext;
+            _urlRecordService               = urlRecordService;
+            _videoService                   = videoService;
+            _webHelper                      = webHelper;
+            _workContext                    = workContext;
+            _vendorSettings                 = vendorSettings;
+            _faqModelFactory                = faqModelFactory;
+            _faqService                     = faqService;
+            _faqProductService         = faqProductService;
         }
 
         #endregion
@@ -3774,6 +3783,57 @@ namespace Nop.Web.Areas.Admin.Controllers
             var model = await _productModelFactory.PrepareStockQuantityHistoryListModelAsync(searchModel, product);
 
             return Json(model);
+        }
+        
+        [HttpPost]
+        public virtual async Task<IActionResult> FaqList(FaqSearchModel searchModel)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
+                return await AccessDeniedDataTablesJson();
+
+            var model = await _faqModelFactory.PrepareFaqProductListModelAsync(searchModel);
+            
+            return Json(model);
+        }
+        
+        public virtual async Task<IActionResult> FaqCreate(int productId)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+                return AccessDeniedView();
+
+            var model = await _faqModelFactory.PrepareFaqModelAsync(new FaqModel()
+            {
+                ProductId = productId
+            }, null);
+
+            return View(model);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public virtual async Task<IActionResult> FaqCreate(FaqModel model, bool continueEditing)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+                return AccessDeniedView();
+
+            var faq = new Faq();
+        
+            if (ModelState.IsValid)
+            {
+                faq.QuestionTitle       = model.QuestionTitle;
+                faq.QuestionDescription = model.QuestionDescription;
+                faq.AnswerTitle         = model.AnswerTitle;
+                faq.AnswerDescription   = model.AnswerDescription;
+                faq.CategoryId          = model.CategoryId;
+            
+                await _faqService.InsertFaqAsync(faq);
+
+                var faqProduct = new FaqProductMapping() { FaqId = faq.Id, ProductId = model.ProductId };
+
+                await _faqProductService.InsertFaqProductAsync(faqProduct);
+
+            }
+            
+            return RedirectToAction("Edit", new{id = model.ProductId});
         }
 
         #endregion
