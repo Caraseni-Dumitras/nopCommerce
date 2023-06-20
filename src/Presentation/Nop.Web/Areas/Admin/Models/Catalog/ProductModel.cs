@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Nop.Web.Areas.Admin.Models.FAQs;
 using Nop.Web.Areas.Admin.Models.Settings;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Mvc.ModelBinding;
@@ -63,6 +64,7 @@ namespace Nop.Web.Areas.Admin.Models.Catalog
             StockQuantityHistorySearchModel = new StockQuantityHistorySearchModel();
             ProductAttributeMappingSearchModel = new ProductAttributeMappingSearchModel();
             ProductAttributeCombinationSearchModel = new ProductAttributeCombinationSearchModel();
+            FaqSearchModel = new FaqSearchModel();
         }
 
         #endregion
@@ -477,6 +479,7 @@ namespace Nop.Web.Areas.Admin.Models.Catalog
         public ProductAttributeMappingSearchModel ProductAttributeMappingSearchModel { get; set; }
 
         public ProductAttributeCombinationSearchModel ProductAttributeCombinationSearchModel { get; set; }
+        public FaqSearchModel FaqSearchModel { get; set; }
 
         #endregion
     }
