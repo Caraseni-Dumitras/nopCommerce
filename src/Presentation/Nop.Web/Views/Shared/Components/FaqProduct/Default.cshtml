@@ -2,6 +2,12 @@
 @model FaqIndexModel
 
 <div class="faq-category" id="faq-category-1">
+    @if (Model.FaqModels.Count > 0)
+    {
+        <div class="faq-product">
+            <strong>Frequently asked questions</strong>
+        </div>   
+    }
     @foreach (var faq in Model.FaqModels)
     {
         <div class="faq-items">

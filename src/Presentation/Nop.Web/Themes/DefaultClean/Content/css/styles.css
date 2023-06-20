@@ -8897,3 +8897,8 @@ a.skip:hover {
 .faq-item .item-description {
   padding: 15px 15px 15px 30px;
 }
+
+.faq-product {
+  margin: 0 0 20px;
+  font-size: 16px;
+}
