@@ -227,6 +227,7 @@ namespace Nop.Web.Framework.Infrastructure
             services.AddScoped<IHtmlFormatter, HtmlFormatter>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<INopUrlHelper, NopUrlHelper>();
+            services.AddScoped<IFaqProductService, FaqProductService>();
 
             //attribute services
             services.AddScoped(typeof(IAttributeService<,>), typeof(AttributeService<,>));

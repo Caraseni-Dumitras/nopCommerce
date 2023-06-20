@@ -13,12 +13,14 @@ public class FaqController : BaseAdminController
     protected readonly IPermissionService _permissionService;
     protected readonly IFaqModelFactory   _faqModelFactory;
     protected readonly IFaqService        _faqService;
+    protected readonly IFaqProductService _faqProductService;
 
-    public FaqController(IPermissionService permissionService, IFaqModelFactory faqModelFactory, IFaqService faqService)
+    public FaqController(IPermissionService permissionService, IFaqModelFactory faqModelFactory, IFaqService faqService, IFaqProductService faqProductService)
     {
-        _permissionService = permissionService;
-        _faqModelFactory   = faqModelFactory;
-        _faqService   = faqService;
+        _permissionService      = permissionService;
+        _faqModelFactory        = faqModelFactory;
+        _faqService             = faqService;
+        _faqProductService = faqProductService;
     }
 
     public virtual IActionResult Index()
@@ -119,6 +121,10 @@ public class FaqController : BaseAdminController
             faq.CategoryId          = model.CategoryId;
             
             await _faqService.InsertFaqAsync(faq);
+
+            var faqProduct = new FaqProductMapping() { FaqId = faq.Id, ProductId = 0 };
+
+            await _faqProductService.InsertFaqProductAsync(faqProduct);
 
             return continueEditing ? RedirectToAction("Edit", new { faq.Id }) : RedirectToAction("List");
         }
