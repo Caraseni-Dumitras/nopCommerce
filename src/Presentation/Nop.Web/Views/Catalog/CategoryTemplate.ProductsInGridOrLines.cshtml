@@ -140,6 +140,7 @@
             catalogProductsViewData["fetchUrl"] = Html.Raw(Url.RouteUrl("GetCategoryProducts", new { categoryId = Model.Id }));
         }
         @await Html.PartialAsync("_CatalogProducts", Model.CatalogProductsModel, catalogProductsViewData)
+        @await Component.InvokeAsync(typeof(FaqViewComponent), @Model.Id)
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CategoryDetailsBottom, additionalData = Model })
     </div>
 </div>

@@ -29,6 +29,11 @@ namespace Nop.Web.Infrastructure
             endpointRouteBuilder.MapControllerRoute(name: "Homepage",
                 pattern: $"{lang}",
                 defaults: new { controller = "Home", action = "Index" });
+            
+            //faq
+            endpointRouteBuilder.MapControllerRoute(name: "Faq",
+                pattern: $"{lang}/faq",
+                defaults: new { controller = "Faq", action = "Index" });
 
             //login
             endpointRouteBuilder.MapControllerRoute(name: "Login",

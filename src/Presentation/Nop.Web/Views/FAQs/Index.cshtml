@@ -2,7 +2,7 @@
 @model FaqModel
 
 @{
-        Layout = "_FaqColumnsOne";
+        Layout = "_ColumnsOne";
 }
 
 <div>
@@ -13,7 +13,7 @@
             <h1>FAQ @Model.CategoryName</h1>
         </div>
     <div>
-        @await Component.InvokeAsync(typeof(FaqViewComponent), @Model.CategoryId)
+        @await Component.InvokeAsync(typeof(FaqViewComponent), 0)
     </div>
 </div>
     
