@@ -1,0 +1,30 @@
+@using Nop.Web.Models.FAQs
+@model FaqIndexModel
+
+<div class="faq-category" id="faq-category-1">
+    @foreach (var faq in Model.FaqModels)
+    {
+        <div class="faq-items">
+            <div class="faq-item">
+                <div id="q" class="item-header">
+                    <h1>@faq.QuestionTitle</h1>
+                </div>
+                <div class="margin-t-10"> </div>
+                <div id="a" class="item-description" style="display: none">
+                    <div class="item-answer">
+                        <p>@faq.AnswerDescription</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.faq-item .item-header').on('click', function () {
+            $(this).toggleClass('active');
+            $(this).siblings('.item-description').slideToggle("fast");
+        });
+    });
+</script>

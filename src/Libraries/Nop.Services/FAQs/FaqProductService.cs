@@ -16,4 +16,10 @@ public class FaqProductService : IFaqProductService
     {
         await _faqProductRepository.InsertAsync(faqProduct, false);
     }
+
+    public async Task<List<FaqProductMapping>> GetAllFaqByProductsIdAsync(int productId)
+    {
+        var entities = await _faqProductRepository.Table.Where(f => f.ProductId == productId).ToListAsync();
+        return entities;
+    }
 }
