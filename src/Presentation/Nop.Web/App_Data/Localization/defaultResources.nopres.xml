@@ -20118,4 +20118,7 @@
   <LocaleResource Name="Admin.ContentManagement.FAQ.SearchIncludeSubCategories">
     <Value>Search subcategories</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.FAQ.SaveBeforeEdit">
+    <Value>You need to save the product before you can add attributes for this page.</Value>
+  </LocaleResource>
 </Language>
