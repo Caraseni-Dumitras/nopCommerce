@@ -16,9 +16,9 @@ public class FaqController : BaseAdminController
 
     public FaqController(IPermissionService permissionService, IFaqModelFactory faqModelFactory, IFaqService faqService)
     {
-        _permissionService      = permissionService;
-        _faqModelFactory        = faqModelFactory;
-        _faqService             = faqService;
+        _permissionService = permissionService;
+        _faqModelFactory   = faqModelFactory;
+        _faqService        = faqService;
     }
 
     public virtual IActionResult Index()
@@ -32,10 +32,10 @@ public class FaqController : BaseAdminController
             return AccessDeniedView();
 
         var model = await _faqModelFactory.PrepareFaqSearchModelAsync(new FaqSearchModel());
-        
+
         return View(model);
     }
-    
+
     [HttpPost]
     public virtual async Task<IActionResult> List(FaqSearchModel searchModel)
     {
@@ -46,12 +46,12 @@ public class FaqController : BaseAdminController
 
         return Json(model);
     }
-    
+
     public virtual async Task<IActionResult> Edit(int id)
     {
         if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
             return AccessDeniedView();
-    
+
         var faq = await _faqService.GetFaqByIdAsync(id);
         if (faq == null)
             return RedirectToAction("List");
@@ -61,32 +61,32 @@ public class FaqController : BaseAdminController
         {
             var faqCategoryModel = await _faqModelFactory.PrepareFaqCategoryModelAsync(null, faq);
             faqCategoryModel.IsFaqCategory = true;
-            
+
             return View(faqCategoryModel);
         }
-    
+
         var faqProductModel = await _faqModelFactory.PrepareFaqProductModelAsync(null, faq);
-    
+
         return View(faqProductModel);
     }
-    
+
     [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
     public virtual async Task<IActionResult> Edit(FaqModel model, bool continueEditing)
     {
         if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
             return AccessDeniedView();
-    
+
         var faq = await _faqService.GetFaqByIdAsync(model.Id);
         if (faq == null)
             return RedirectToAction("List");
-    
+
         if (ModelState.IsValid)
         {
             faq.QuestionTitle       = model.QuestionTitle;
             faq.QuestionDescription = model.QuestionDescription;
             faq.AnswerTitle         = model.AnswerTitle;
             faq.AnswerDescription   = model.AnswerDescription;
-                
+
             await _faqService.UpdateFaqAsync(faq);
 
             if (model.IsFaqCategory)
@@ -98,19 +98,19 @@ public class FaqController : BaseAdminController
             {
                 model = await _faqModelFactory.PrepareFaqProductModelAsync(model, faq);
             }
-            
+
             if (!continueEditing)
                 return RedirectToAction("List");
-    
+
             return RedirectToAction("Edit", new { id = faq.Id });
         }
-    
+
         return View(model);
     }
-    
+
     protected virtual async Task SaveCategoryMappingsAsync(Faq faq, FaqModel model)
     {
-        var existingFaqCategories = await _faqService.GetAllFaqCategoryEntitiesAsync(faq.Id);
+        var existingFaqCategories = await _faqService.GetAllFaqCategoryEntitiesByFaqIdAsync(faq.Id);
 
         foreach (var existingFaqCategory in existingFaqCategories)
             if (!model.CategoryIds.Contains(existingFaqCategory.CategoryId))
@@ -122,16 +122,15 @@ public class FaqController : BaseAdminController
             {
                 await _faqService.InsertFaqCategoryAsync(new FaqCategoryMapping()
                 {
-                    FaqId        = faq.Id,
-                    CategoryId   = categoryId
+                    FaqId = faq.Id, CategoryId = categoryId
                 });
             }
         }
     }
-    
+
     protected virtual async Task SaveProductMappingsAsync(Faq faq, FaqModel model)
     {
-        var existingFaqProducts = await _faqService.GetAllFaqProductEntitiesAsync(faq.Id);
+        var existingFaqProducts = await _faqService.GetAllFaqProductEntitiesByFaqIdAsync(faq.Id);
 
         foreach (var existingFaqProduct in existingFaqProducts)
             if (!model.SelectedCategoryIds.Contains(existingFaqProduct.ProductId))
@@ -143,13 +142,12 @@ public class FaqController : BaseAdminController
             {
                 await _faqService.InsertFaqProductAsync(new FaqProductMapping()
                 {
-                    FaqId      = faq.Id,
-                    ProductId = productId
+                    FaqId = faq.Id, ProductId = productId
                 });
             }
         }
     }
-    
+
     // public virtual async Task<IActionResult> Create()
     // {
     //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
@@ -190,18 +188,28 @@ public class FaqController : BaseAdminController
     //     return View(model);
     // }
     //
-    // [HttpPost]
-    // public virtual async Task<IActionResult> Delete(int id)
-    // {
-    //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
-    //         return AccessDeniedView();
-    //
-    //     var faq = await _faqService.GetFaqByIdAsync(id);
-    //     if (faq == null)
-    //         return RedirectToAction("List");
-    //
-    //     await _faqService.DeleteFaqAsync(faq);
-    //
-    //     return RedirectToAction("List");
-    // }
+    [HttpPost]
+    public virtual async Task<IActionResult> Delete(int id)
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+            return AccessDeniedView();
+
+        var faq = await _faqService.GetFaqByIdAsync(id);
+        if (faq == null)
+            return RedirectToAction("List");
+
+        var isFaqCategory = await _faqService.CheckIsFaqCategoryAsync(id);
+        if (isFaqCategory)
+        {
+            await _faqService.DeleteFaqCategoriesAsync(faq.Id);
+        }
+        else
+        {
+            await _faqService.DeleteFaqProductsAsync(faq.Id);
+        }
+
+        await _faqService.DeleteFaqAsync(faq);
+
+        return RedirectToAction("List");
+    }
 }
