@@ -9,6 +9,5 @@ public interface IFaqModelFactory
     Task<FaqListModel>   PrepareFaqListModelAsync(FaqSearchModel   searchModel);
     Task<FaqModel>       PrepareFaqCategoryModelAsync(FaqModel     model, Faq faq);
     Task<FaqModel>       PrepareFaqProductModelAsync(FaqModel      model, Faq faq);
-
-    // Task<FaqListModel>   PrepareFaqProductListModelAsync(FaqSearchModel   searchModel);
+    Task<FaqListModel>   PrepareFaqProductListModelAsync(FaqSearchModel   searchModel);
 }

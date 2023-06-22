@@ -28,10 +28,22 @@
                                Title = T("Admin.ContentManagement.FAQ.Fields.AnswerTitle").Text, 
                                Width = "400"
                            },
-                           new ColumnProperty(nameof(FaqModel.CategoryName))
+                           new ColumnProperty(nameof(FaqModel.ProductName))
                            {
                                Title = T("Admin.ContentManagement.FAQ.Fields.CategoryName").Text, 
                                Width = "50"
+                           },
+                           new ColumnProperty(nameof(FaqModel.CreatedOnUtc))
+                           {
+                               Title = T("Admin.ContentManagement.FAQ.Fields.CreatedOnUtc").Text,
+                               Width = "100",
+                                           
+                           },
+                           new ColumnProperty(nameof(FaqModel.UpdatedOnUtc))
+                           {
+                               Title = T("Admin.ContentManagement.FAQ.Fields.UpdatedOnUtc").Text,
+                               Width = "100",
+                                           
                            },
                            new ColumnProperty(nameof(FaqModel.Id))
                            {

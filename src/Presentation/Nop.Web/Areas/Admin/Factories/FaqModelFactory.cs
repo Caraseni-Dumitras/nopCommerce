@@ -144,43 +144,34 @@ public class FaqModelFactory : IFaqModelFactory
         return model;
     }
 
-    // public async Task<FaqListModel> PrepareFaqProductListModelAsync(FaqSearchModel searchModel)
-    // {
-    //     if (searchModel == null)
-    //         throw new ArgumentNullException(nameof(searchModel));
-    //
-    //     var faqProducts = await _faqProductService.GetAllFaqByProductsIdAsync(searchModel.SearchProductId);
-    //     var faqsIds     = new List<int>();
-    //
-    //     foreach (var item in faqProducts)
-    //     {
-    //         faqsIds.Add(item.FaqId);
-    //     }
-    //
-    //     var faqs = await _faqService.GetAllFaqByIdsAsync(faqsIds);
-    //     
-    //     var pagedFaqs = faqs.ToPagedList(searchModel);
-    //
-    //     var model = await new FaqListModel().PrepareToGridAsync(searchModel, pagedFaqs, () =>
-    //     {
-    //         return pagedFaqs.SelectAwait(async faq =>
-    //         {
-    //             var category = await _categoryService.GetCategoryByIdAsync(faq.CategoryId);
-    //             var faqModel =  new FaqModel()
-    //             {
-    //                 Id                  = faq.Id,
-    //                 QuestionTitle       = faq.QuestionTitle,
-    //                 QuestionDescription = faq.QuestionDescription,
-    //                 AnswerTitle         = faq.AnswerTitle,
-    //                 AnswerDescription   = faq.AnswerDescription,
-    //                 CategoryId          = faq.CategoryId,
-    //                 CategoryName        = category.Name
-    //             };
-    //
-    //             return faqModel;
-    //         });
-    //     });
-    //
-    //     return model;
-    // }
+    public async Task<FaqListModel> PrepareFaqProductListModelAsync(FaqSearchModel searchModel)
+    {
+        if (searchModel == null)
+            throw new ArgumentNullException(nameof(searchModel));
+    
+        var faqProducts = await _faqService.GetAllFaqByProductsIdAsync(searchModel.SearchProductId);
+        
+        var pagedFaqs = faqProducts.ToPagedList(searchModel);
+    
+        var model = await new FaqListModel().PrepareToGridAsync(searchModel, pagedFaqs, () =>
+        {
+            return pagedFaqs.SelectAwait(async faq =>
+            {
+                var products = await _faqService.GetFaqProductsAsync(faq.Id);
+                var faqModel =  new FaqModel()
+                {
+                    Id                  = faq.Id,
+                    QuestionTitle       = faq.QuestionTitle,
+                    QuestionDescription = faq.QuestionDescription,
+                    AnswerTitle         = faq.AnswerTitle,
+                    AnswerDescription   = faq.AnswerDescription,
+                    ProductName         = products.Select(it => it.Name).ToList()
+                };
+    
+                return faqModel;
+            });
+        });
+    
+        return model;
+    }
 }

@@ -3785,17 +3785,17 @@ namespace Nop.Web.Areas.Admin.Controllers
             return Json(model);
         }
         
-        // [HttpPost]
-        // public virtual async Task<IActionResult> FaqList(FaqSearchModel searchModel)
-        // {
-        //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
-        //         return await AccessDeniedDataTablesJson();
-        //
-        //     var model = await _faqModelFactory.PrepareFaqProductListModelAsync(searchModel);
-        //     
-        //     return Json(model);
-        // }
-        //
+        [HttpPost]
+        public virtual async Task<IActionResult> FaqList(FaqSearchModel searchModel)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
+                return await AccessDeniedDataTablesJson();
+        
+            var model = await _faqModelFactory.PrepareFaqProductListModelAsync(searchModel);
+            
+            return Json(model);
+        }
+        
         // public virtual async Task<IActionResult> FaqCreate(int productId)
         // {
         //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
