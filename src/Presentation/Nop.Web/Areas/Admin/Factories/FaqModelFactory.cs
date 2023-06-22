@@ -165,6 +165,8 @@ public class FaqModelFactory : IFaqModelFactory
                     QuestionDescription = faq.QuestionDescription,
                     AnswerTitle         = faq.AnswerTitle,
                     AnswerDescription   = faq.AnswerDescription,
+                    CreatedOnUtc        = faq.CreatedOnUtc,
+                    UpdatedOnUtc        = faq.UpdatedOnUtc,
                     ProductName         = products.Select(it => it.Name).ToList()
                 };
     
