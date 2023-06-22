@@ -8,6 +8,7 @@
 }
 
 <form asp-controller="Faq" asp-action="Edit" method="post">
+    <input asp-for="IsFaqCategory" type="hidden" />
     <div class="content-header clearfix">
         <h1 class="float-left">
             <small>
@@ -54,6 +55,5 @@
             </div>
         </div>
     </section>
-    
 </form>
 <nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="faq-delete" />

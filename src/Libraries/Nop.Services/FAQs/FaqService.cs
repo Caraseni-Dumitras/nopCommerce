@@ -54,9 +54,62 @@ public class FaqService : IFaqService
         return await _productService.GetProductsByIdsAsync(productIds);
     }
 
-    public async Task<bool> CheckIsFaqCategory(int id)
+    public async Task<bool> CheckIsFaqCategoryAsync(int id)
     {
-        return _faqCategoryMappingRepository.Table.Any(it => it.FaqId == id);
+        return !_faqProductMappingRepository.Table.Any(it => it.FaqId == id);
+    }
+
+    public Task<bool> UpdateFaqCategoryAsync(ICollection<int> categoriesIds, int faqId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IList<FaqCategoryMapping>> GetAllFaqCategoryEntitiesAsync(int id)
+    {
+        return await _faqCategoryMappingRepository.Table.Where(it => it.FaqId == id).ToListAsync();
+    }
+
+    public async Task DeleteFaqCategoryAsync(FaqCategoryMapping faqCategoryMapping)
+    {
+        await _faqCategoryMappingRepository.DeleteAsync(faqCategoryMapping, false);
+    }
+
+    public async Task<FaqCategoryMapping> FindFaqCategoryAsync(IList<FaqCategoryMapping> source, int faqId, int categoryId)
+    {
+        foreach (var faqCategory in source)
+            if (faqCategory.FaqId == faqId && faqCategory.CategoryId == categoryId)
+                return faqCategory;
+
+        return null;
+    }
+
+    public async Task InsertFaqCategoryAsync(FaqCategoryMapping faqCategoryMapping)
+    {
+        await _faqCategoryMappingRepository.InsertAsync(faqCategoryMapping, false);
+    }
+
+    public async Task InsertFaqProductAsync(FaqProductMapping faqProductMapping)
+    {
+        await _faqProductMappingRepository.InsertAsync(faqProductMapping, false);
+    }
+
+    public async Task<IList<FaqProductMapping>> GetAllFaqProductEntitiesAsync(int id)
+    {
+        return await _faqProductMappingRepository.Table.Where(it => it.FaqId == id).ToListAsync();
+    }
+
+    public async Task<FaqProductMapping> FindFaqProductAsync(IList<FaqProductMapping> source, int faqId, int productId)
+    {
+        foreach (var faqProduct in source)
+            if (faqProduct.FaqId == faqId && faqProduct.ProductId == productId)
+                return faqProduct;
+
+        return null;
+    }
+
+    public async  Task DeleteFaqProductAsync(FaqProductMapping faqProductMapping)
+    {
+        await _faqProductMappingRepository.DeleteAsync(faqProductMapping, false);
     }
 
     public async Task<List<Faq>> GetAllFaqsAsync(List<int> categoryIds)
@@ -78,11 +131,12 @@ public class FaqService : IFaqService
         return await _faqRepository.GetByIdAsync(id);
     }
     
-    // public async Task UpdateFaqAsync(Faq faq)
-    // {
-    //     await _faqRepository.UpdateAsync(faq);
-    // }
-    //
+    public async Task UpdateFaqAsync(Faq faq)
+    {
+        faq.UpdatedOnUtc = DateTime.UtcNow;
+        await _faqRepository.UpdateAsync(faq);
+    }
+    
     // public async Task DeleteFaqAsync(Faq faq)
     // {
     //     await _faqRepository.DeleteAsync(faq, false);

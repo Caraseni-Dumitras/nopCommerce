@@ -56,7 +56,7 @@ public class FaqController : BaseAdminController
         if (faq == null)
             return RedirectToAction("List");
 
-        var isFaqCategory = await _faqService.CheckIsFaqCategory(id);
+        var isFaqCategory = await _faqService.CheckIsFaqCategoryAsync(id);
         if (isFaqCategory)
         {
             var faqCategoryModel = await _faqModelFactory.PrepareFaqCategoryModelAsync(null, faq);
@@ -70,37 +70,86 @@ public class FaqController : BaseAdminController
         return View(faqProductModel);
     }
     
-    // [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-    // public virtual async Task<IActionResult> Edit(FaqModel model, bool continueEditing)
-    // {
-    //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
-    //         return AccessDeniedView();
-    //
-    //     var faq = await _faqService.GetFaqByIdAsync(model.Id);
-    //     if (faq == null)
-    //         return RedirectToAction("List");
-    //
-    //     if (ModelState.IsValid)
-    //     {
-    //         faq.QuestionTitle       = model.QuestionTitle;
-    //         faq.QuestionDescription = model.QuestionDescription;
-    //         faq.AnswerTitle         = model.AnswerTitle;
-    //         faq.AnswerDescription   = model.AnswerDescription;
-    //         faq.CategoryId          = model.CategoryId;
-    //             
-    //         await _faqService.UpdateFaqAsync(faq);
-    //
-    //         if (!continueEditing)
-    //             return RedirectToAction("List");
-    //
-    //         return RedirectToAction("Edit", new { id = faq.Id });
-    //     }
-    //
-    //     model = await _faqModelFactory.PrepareFaqModelAsync(model, faq);
-    //
-    //     return View(model);
-    // }
-    //
+    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    public virtual async Task<IActionResult> Edit(FaqModel model, bool continueEditing)
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
+            return AccessDeniedView();
+    
+        var faq = await _faqService.GetFaqByIdAsync(model.Id);
+        if (faq == null)
+            return RedirectToAction("List");
+    
+        if (ModelState.IsValid)
+        {
+            faq.QuestionTitle       = model.QuestionTitle;
+            faq.QuestionDescription = model.QuestionDescription;
+            faq.AnswerTitle         = model.AnswerTitle;
+            faq.AnswerDescription   = model.AnswerDescription;
+                
+            await _faqService.UpdateFaqAsync(faq);
+
+            if (model.IsFaqCategory)
+            {
+                await SaveCategoryMappingsAsync(faq, model);
+                model = await _faqModelFactory.PrepareFaqCategoryModelAsync(model, faq);
+            }
+            else
+            {
+                model = await _faqModelFactory.PrepareFaqProductModelAsync(model, faq);
+            }
+            
+            if (!continueEditing)
+                return RedirectToAction("List");
+    
+            return RedirectToAction("Edit", new { id = faq.Id });
+        }
+    
+        return View(model);
+    }
+    
+    protected virtual async Task SaveCategoryMappingsAsync(Faq faq, FaqModel model)
+    {
+        var existingFaqCategories = await _faqService.GetAllFaqCategoryEntitiesAsync(faq.Id);
+
+        foreach (var existingFaqCategory in existingFaqCategories)
+            if (!model.CategoryIds.Contains(existingFaqCategory.CategoryId))
+                await _faqService.DeleteFaqCategoryAsync(existingFaqCategory);
+
+        foreach (var categoryId in model.CategoryIds)
+        {
+            if (await _faqService.FindFaqCategoryAsync(existingFaqCategories, faq.Id, categoryId) == null)
+            {
+                await _faqService.InsertFaqCategoryAsync(new FaqCategoryMapping()
+                {
+                    FaqId        = faq.Id,
+                    CategoryId   = categoryId
+                });
+            }
+        }
+    }
+    
+    protected virtual async Task SaveProductMappingsAsync(Faq faq, FaqModel model)
+    {
+        var existingFaqProducts = await _faqService.GetAllFaqProductEntitiesAsync(faq.Id);
+
+        foreach (var existingFaqProduct in existingFaqProducts)
+            if (!model.SelectedCategoryIds.Contains(existingFaqProduct.ProductId))
+                await _faqService.DeleteFaqProductAsync(existingFaqProduct);
+
+        foreach (var productId in model.ProductIds)
+        {
+            if (_faqService.FindFaqProductAsync(existingFaqProducts, faq.Id, productId) == null)
+            {
+                await _faqService.InsertFaqProductAsync(new FaqProductMapping()
+                {
+                    FaqId      = faq.Id,
+                    ProductId = productId
+                });
+            }
+        }
+    }
+    
     // public virtual async Task<IActionResult> Create()
     // {
     //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
