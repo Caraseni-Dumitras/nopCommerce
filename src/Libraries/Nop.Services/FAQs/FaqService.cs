@@ -156,13 +156,8 @@ public class FaqService : IFaqService
         await _faqRepository.DeleteAsync(faq, false);
     }
 
-    // public async Task InsertFaqAsync(Faq faq)
-    // {
-    //     await _faqRepository.InsertAsync(faq, false);
-    // }
-    //
-    // public async Task<IList<Faq>> GetAllFaqByIdsAsync(List<int> ids)
-    // {
-    //     return await _faqRepository.GetByIdsAsync(ids);
-    // }
+    public async Task InsertFaqAsync(Faq faq)
+    {
+        await _faqRepository.InsertAsync(faq, false);
+    }
 }

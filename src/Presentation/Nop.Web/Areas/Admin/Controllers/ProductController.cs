@@ -81,7 +81,6 @@ namespace Nop.Web.Areas.Admin.Controllers
         protected readonly VendorSettings                  _vendorSettings;
         protected readonly IFaqModelFactory                _faqModelFactory;
         protected readonly IFaqService                     _faqService;
-        protected readonly IFaqProductService              _faqProductService;
 
         #endregion
 
@@ -123,7 +122,9 @@ namespace Nop.Web.Areas.Admin.Controllers
             IVideoService                    videoService,
             IWebHelper                       webHelper,
             IWorkContext                     workContext,
-            VendorSettings                   vendorSettings, IFaqModelFactory faqModelFactory, IFaqService faqService, IFaqProductService faqProductService)
+            VendorSettings                   vendorSettings, 
+            IFaqModelFactory                 faqModelFactory, 
+            IFaqService                      faqService)
         {
             _aclService                     = aclService;
             _backInStockSubscriptionService = backInStockSubscriptionService;
@@ -164,7 +165,6 @@ namespace Nop.Web.Areas.Admin.Controllers
             _vendorSettings                 = vendorSettings;
             _faqModelFactory                = faqModelFactory;
             _faqService                     = faqService;
-            _faqProductService         = faqProductService;
         }
 
         #endregion
@@ -3785,56 +3785,56 @@ namespace Nop.Web.Areas.Admin.Controllers
             return Json(model);
         }
         
-        [HttpPost]
-        public virtual async Task<IActionResult> FaqList(FaqSearchModel searchModel)
-        {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
-                return await AccessDeniedDataTablesJson();
-
-            var model = await _faqModelFactory.PrepareFaqProductListModelAsync(searchModel);
-            
-            return Json(model);
-        }
-        
-        public virtual async Task<IActionResult> FaqCreate(int productId)
-        {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
-                return AccessDeniedView();
-
-            var model = await _faqModelFactory.PrepareFaqModelAsync(new FaqModel()
-            {
-                ProductId = productId
-            }, null);
-
-            return View(model);
-        }
-
-        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-        public virtual async Task<IActionResult> FaqCreate(FaqModel model, bool continueEditing)
-        {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
-                return AccessDeniedView();
-
-            var faq = new Faq();
-        
-            if (ModelState.IsValid)
-            {
-                faq.QuestionTitle       = model.QuestionTitle;
-                faq.QuestionDescription = model.QuestionDescription;
-                faq.AnswerTitle         = model.AnswerTitle;
-                faq.AnswerDescription   = model.AnswerDescription;
-                faq.CategoryId          = model.CategoryId;
-            
-                await _faqService.InsertFaqAsync(faq);
-
-                var faqProduct = new FaqProductMapping() { FaqId = faq.Id, ProductId = model.ProductId };
-
-                await _faqProductService.InsertFaqProductAsync(faqProduct);
-
-            }
-            
-            return RedirectToAction("Edit", new{id = model.ProductId});
-        }
+        // [HttpPost]
+        // public virtual async Task<IActionResult> FaqList(FaqSearchModel searchModel)
+        // {
+        //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
+        //         return await AccessDeniedDataTablesJson();
+        //
+        //     var model = await _faqModelFactory.PrepareFaqProductListModelAsync(searchModel);
+        //     
+        //     return Json(model);
+        // }
+        //
+        // public virtual async Task<IActionResult> FaqCreate(int productId)
+        // {
+        //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+        //         return AccessDeniedView();
+        //
+        //     var model = await _faqModelFactory.PrepareFaqModelAsync(new FaqModel()
+        //     {
+        //         ProductId = productId
+        //     }, null);
+        //
+        //     return View(model);
+        // }
+        //
+        // [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        // public virtual async Task<IActionResult> FaqCreate(FaqModel model, bool continueEditing)
+        // {
+        //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+        //         return AccessDeniedView();
+        //
+        //     var faq = new Faq();
+        //
+        //     if (ModelState.IsValid)
+        //     {
+        //         faq.QuestionTitle       = model.QuestionTitle;
+        //         faq.QuestionDescription = model.QuestionDescription;
+        //         faq.AnswerTitle         = model.AnswerTitle;
+        //         faq.AnswerDescription   = model.AnswerDescription;
+        //         faq.CategoryId          = model.CategoryId;
+        //     
+        //         await _faqService.InsertFaqAsync(faq);
+        //
+        //         var faqProduct = new FaqProductMapping() { FaqId = faq.Id, ProductId = model.ProductId };
+        //
+        //         await _faqProductService.InsertFaqProductAsync(faqProduct);
+        //
+        //     }
+        //     
+        //     return RedirectToAction("Edit", new{id = model.ProductId});
+        // }
 
         #endregion
 

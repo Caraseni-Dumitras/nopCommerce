@@ -148,46 +148,43 @@ public class FaqController : BaseAdminController
         }
     }
 
-    // public virtual async Task<IActionResult> Create()
-    // {
-    //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
-    //         return AccessDeniedView();
-    //
-    //     var model = await _faqModelFactory.PrepareFaqModelAsync(new FaqModel(), null);
-    //
-    //     return View(model);
-    // }
-    //
-    // [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
-    // public virtual async Task<IActionResult> Create(FaqModel model, bool continueEditing)
-    // {
-    //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
-    //         return AccessDeniedView();
-    //
-    //     var faq = new Faq();
-    //     
-    //     if (ModelState.IsValid)
-    //     {
-    //         faq.QuestionTitle       = model.QuestionTitle;
-    //         faq.QuestionDescription = model.QuestionDescription;
-    //         faq.AnswerTitle         = model.AnswerTitle;
-    //         faq.AnswerDescription   = model.AnswerDescription;
-    //         faq.CategoryId          = model.CategoryId;
-    //         
-    //         await _faqService.InsertFaqAsync(faq);
-    //
-    //         var faqProduct = new FaqProductMapping() { FaqId = faq.Id, ProductId = 0 };
-    //
-    //         await _faqProductService.InsertFaqProductAsync(faqProduct);
-    //
-    //         return continueEditing ? RedirectToAction("Edit", new { faq.Id }) : RedirectToAction("List");
-    //     }
-    //
-    //     model = await _faqModelFactory.PrepareFaqModelAsync(model, null);
-    //
-    //     return View(model);
-    // }
-    //
+    public virtual async Task<IActionResult> Create()
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+            return AccessDeniedView();
+
+        var model = await _faqModelFactory.PrepareFaqCategoryModelAsync(new FaqModel(), null);
+
+        return View(model);
+    }
+
+    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    public virtual async Task<IActionResult> Create(FaqModel model, bool continueEditing)
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForums))
+            return AccessDeniedView();
+
+        var faq = new Faq();
+
+        if (ModelState.IsValid)
+        {
+            faq.QuestionTitle       = model.QuestionTitle;
+            faq.QuestionDescription = model.QuestionDescription;
+            faq.AnswerTitle         = model.AnswerTitle;
+            faq.AnswerDescription   = model.AnswerDescription;
+
+            await _faqService.InsertFaqAsync(faq);
+
+            await SaveCategoryMappingsAsync(faq, model);
+
+            return continueEditing ? RedirectToAction("Edit", new { faq.Id }) : RedirectToAction("List");
+        }
+
+        model = await _faqModelFactory.PrepareFaqCategoryModelAsync(model, null);
+
+        return View(model);
+    }
+
     [HttpPost]
     public virtual async Task<IActionResult> Delete(int id)
     {

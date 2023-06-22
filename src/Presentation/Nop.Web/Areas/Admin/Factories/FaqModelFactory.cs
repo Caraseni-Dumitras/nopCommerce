@@ -11,55 +11,56 @@ public class FaqModelFactory : IFaqModelFactory
     protected readonly IFaqService            _faqService;
     protected readonly ICategoryService       _categoryService;
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
-    protected readonly IFaqProductService     _faqProductService;
 
-    public FaqModelFactory(IFaqService faqService, ICategoryService categoryService, IBaseAdminModelFactory baseAdminModelFactory, IFaqProductService faqProductService)
+    public FaqModelFactory(IFaqService            faqService, ICategoryService categoryService,
+                           IBaseAdminModelFactory baseAdminModelFactory)
     {
-        _faqService             = faqService;
-        _categoryService        = categoryService;
-        _baseAdminModelFactory  = baseAdminModelFactory;
-        _faqProductService = faqProductService;
+        _faqService            = faqService;
+        _categoryService       = categoryService;
+        _baseAdminModelFactory = baseAdminModelFactory;
     }
 
     public async Task<FaqSearchModel> PrepareFaqSearchModelAsync(FaqSearchModel searchModel)
     {
         if (searchModel == null)
             throw new ArgumentNullException(nameof(searchModel));
-        
+
         await _baseAdminModelFactory.PrepareCategoriesAsync(searchModel.AvailableCategories);
-    
+
         searchModel.SetGridPageSize();
-    
+
         return searchModel;
     }
-    
+
     public async Task<FaqListModel> PrepareFaqListModelAsync(FaqSearchModel searchModel)
     {
         if (searchModel == null)
             throw new ArgumentNullException(nameof(searchModel));
-    
+
         var categoryIds = new List<int>();
         if (searchModel.SearchCategoryId > 0)
         {
             categoryIds.Add(searchModel.SearchCategoryId);
             if (searchModel.SearchIncludeSubCategories)
             {
-                var childCategoryIds = await _categoryService.GetChildCategoryIdsAsync(parentCategoryId: searchModel.SearchCategoryId, showHidden: true);
+                var childCategoryIds =
+                    await _categoryService.GetChildCategoryIdsAsync(parentCategoryId: searchModel.SearchCategoryId,
+                        showHidden: true);
                 categoryIds.AddRange(childCategoryIds);
             }
         }
-    
+
         var faqs = await _faqService.GetAllFaqsAsync(categoryIds);
-        
+
         var pagedFaqs = faqs.ToPagedList(searchModel);
-    
+
         var model = await new FaqListModel().PrepareToGridAsync(searchModel, pagedFaqs, () =>
         {
             return pagedFaqs.SelectAwait(async faq =>
             {
                 var categories = await _faqService.GetFaqCategoriesAsync(faq.Id);
-                var products  = await _faqService.GetFaqProductsAsync(faq.Id);
-                var faqModel =  new FaqModel()
+                var products   = await _faqService.GetFaqProductsAsync(faq.Id);
+                var faqModel = new FaqModel()
                 {
                     Id                  = faq.Id,
                     QuestionTitle       = faq.QuestionTitle,
@@ -72,17 +73,17 @@ public class FaqModelFactory : IFaqModelFactory
                     UpdatedOnUtc        = faq.UpdatedOnUtc,
                     ProductName         = products.Select(it => it.Name).ToList()
                 };
-    
+
                 return faqModel;
             });
         });
-    
+
         return model;
     }
-    
+
     public async Task<FaqModel> PrepareFaqCategoryModelAsync(FaqModel model, Faq faq)
     {
-        var categories = await _categoryService.GetAllCategoriesAsync(showHidden:true);
+        var categories = await _categoryService.GetAllCategoriesAsync(showHidden: true);
         if (faq != null)
         {
             var categoriesIds = new List<int>();
@@ -90,9 +91,9 @@ public class FaqModelFactory : IFaqModelFactory
             {
                 categoriesIds.Add(item.Id);
             }
-        
+
             var faqCategories = await _faqService.GetFaqCategoriesAsync(faq.Id);
-        
+
             model = new FaqModel()
             {
                 Id                  = faq.Id,
@@ -105,21 +106,21 @@ public class FaqModelFactory : IFaqModelFactory
                 SelectedCategoryIds = categoriesIds
             };
         }
-    
+
         if (faq == null)
         {
             var genericCategory = categories.Where(c => c.Name == "Generic").ToList();
             model.CategoryIds  = genericCategory.Select(it => it.Id).ToList();
             model.CategoryName = genericCategory.Select(it => it.Name).ToList();
         }
-    
+
         await _baseAdminModelFactory.PrepareCategoriesAsync(model.AvailableCategories, false);
         foreach (var categoryItem in model.AvailableCategories)
         {
             categoryItem.Selected = int.TryParse(categoryItem.Value, out var categoryId)
                                     && model.SelectedCategoryIds.Contains(categoryId);
-        }  
-        
+        }
+
         return model;
     }
 
@@ -128,7 +129,7 @@ public class FaqModelFactory : IFaqModelFactory
         if (faq != null)
         {
             var faqProducts = await _faqService.GetFaqProductsAsync(faq.Id);
-        
+
             model = new FaqModel()
             {
                 Id                  = faq.Id,
@@ -136,10 +137,10 @@ public class FaqModelFactory : IFaqModelFactory
                 QuestionDescription = faq.QuestionDescription,
                 AnswerTitle         = faq.AnswerTitle,
                 AnswerDescription   = faq.AnswerDescription,
-                ProductIds = faqProducts.Select(it => it.Id).ToList()
+                ProductIds          = faqProducts.Select(it => it.Id).ToList()
             };
-        }  
-        
+        }
+
         return model;
     }
 
