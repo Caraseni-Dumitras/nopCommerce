@@ -21,11 +21,18 @@ public record FaqModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.AnswerDescription")]
     public string AnswerDescription { get; set; }
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.CategoryId")]
-    public int CategoryId { get; set; }
+    public List<int> CategoryIds { get; set; }
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.CategoryName")]
-    public string CategoryName { get; set; }
+    public List<string> CategoryName { get; set; }
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.Categories")]
-    public IList<int> SelectedCategoryIds { get;            set; }
+    public IList<int> SelectedCategoryIds { get; set; }
+    [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.CreatedOnUtc")]
+    public DateTime CreatedOnUtc { get;          set; }
+    [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.UpdatedOnUtc")]
+    public DateTime UpdatedOnUtc { get;          set; }
+    
     public IList<SelectListItem> AvailableCategories { get; set; }
     public int                   ProductId           { get; set; }
+    [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.ProductName")]
+    public List<string>                ProductName         { get; set; }
 }

@@ -1,5 +1,8 @@
+using LinqToDB;
+using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.FAQs;
 using Nop.Data;
+using Nop.Services.Catalog;
 
 namespace Nop.Services.FAQs;
 
@@ -7,13 +10,17 @@ public class FaqService : IFaqService
 {
     protected readonly IRepository<Faq>                _faqRepository;
     protected readonly IRepository<FaqCategoryMapping> _faqCategoryMappingRepository;
-    protected readonly IRepository<FaqProductMapping> _faqProductMappingRepository;
+    protected readonly IRepository<FaqProductMapping>  _faqProductMappingRepository;
+    protected readonly ICategoryService                _categoryService;
+    protected readonly IProductService                 _productService;
 
-    public FaqService(IRepository<Faq> faqRepository, IRepository<FaqCategoryMapping> faqCategoryMappingRepository, IRepository<FaqProductMapping> faqProductMappingRepository)
+    public FaqService(IRepository<Faq> faqRepository, IRepository<FaqCategoryMapping> faqCategoryMappingRepository, IRepository<FaqProductMapping> faqProductMappingRepository, ICategoryService categoryService, IProductService productService)
     {
-        _faqRepository                    = faqRepository;
-        _faqCategoryMappingRepository     = faqCategoryMappingRepository;
-        _faqProductMappingRepository      = faqProductMappingRepository;
+        _faqRepository                = faqRepository;
+        _faqCategoryMappingRepository = faqCategoryMappingRepository;
+        _faqProductMappingRepository  = faqProductMappingRepository;
+        _categoryService              = categoryService;
+        _productService          = productService;
     }
 
     public async Task<IList<Faq>> GetAllFaqByCategoryIdAsync(int categoryId)
@@ -33,14 +40,33 @@ public class FaqService : IFaqService
         return await _faqRepository.GetByIdsAsync(entitiesIds);
     }
 
-    // public async Task<List<Faq>> GetAllFaqsAsync(List<int> categoryIds)
-    // {
-    //     if (categoryIds.Any())
-    //     {
-    //         return await _faqRepository.Table.Where(f => categoryIds.Contains(f.CategoryId)).ToListAsync();
-    //     }
-    //     return await _faqRepository.Table.ToListAsync();
-    // }
+    public async Task<IList<Category>> GetFaqCategoriesAsync(int id)
+    {
+        var categoryIds = await _faqCategoryMappingRepository.Table.Where(it=> it.FaqId == id).Select(it => it.CategoryId).ToArrayAsync();
+
+        return await _categoryService.GetCategoriesByIdsAsync(categoryIds);
+    }
+
+    public async Task<IList<Product>> GetFaqProductsAsync(int id)
+    {
+        var productIds = await _faqProductMappingRepository.Table.Where(it=> it.FaqId == id).Select(it => it.ProductId).ToArrayAsync();
+
+        return await _productService.GetProductsByIdsAsync(productIds);
+    }
+
+    public async Task<List<Faq>> GetAllFaqsAsync(List<int> categoryIds)
+    {
+        if (categoryIds.Any())
+        {
+            var entities = new List<Faq>();
+            foreach (var categoryId in categoryIds)
+            {
+                entities.AddRange(await GetAllFaqByCategoryIdAsync(categoryId));
+            }
+            return entities;
+        }
+        return await _faqRepository.Table.ToListAsync();
+    }
     //
     // public async Task<Faq> GetFaqByIdAsync(int id)
     // {
