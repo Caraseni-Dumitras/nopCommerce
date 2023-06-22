@@ -11,4 +11,5 @@ public interface IFaqService
     // Task            DeleteFaqAsync(Faq                faq);
     // Task            InsertFaqAsync(Faq                faq);
     // Task<IList<Faq>> GetAllFaqByIdsAsync(List<int> ids);
+    Task<IList<Faq>> GetAllFaqByProductsIdAsync(int productId);
 }
