@@ -13,14 +13,12 @@ public class FaqController : BaseAdminController
     protected readonly IPermissionService _permissionService;
     protected readonly IFaqModelFactory   _faqModelFactory;
     protected readonly IFaqService        _faqService;
-    protected readonly IFaqProductService _faqProductService;
 
-    public FaqController(IPermissionService permissionService, IFaqModelFactory faqModelFactory, IFaqService faqService, IFaqProductService faqProductService)
+    public FaqController(IPermissionService permissionService, IFaqModelFactory faqModelFactory, IFaqService faqService)
     {
         _permissionService      = permissionService;
         _faqModelFactory        = faqModelFactory;
         _faqService             = faqService;
-        _faqProductService      = faqProductService;
     }
 
     public virtual IActionResult Index()
@@ -49,20 +47,29 @@ public class FaqController : BaseAdminController
         return Json(model);
     }
     
-    // public virtual async Task<IActionResult> Edit(int id)
-    // {
-    //     if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
-    //         return AccessDeniedView();
-    //
-    //     var faq = await _faqService.GetFaqByIdAsync(id);
-    //     if (faq == null)
-    //         return RedirectToAction("List");
-    //
-    //     var model = await _faqModelFactory.PrepareFaqModelAsync(null, faq);
-    //
-    //     return View(model);
-    // }
-    //
+    public virtual async Task<IActionResult> Edit(int id)
+    {
+        if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
+            return AccessDeniedView();
+    
+        var faq = await _faqService.GetFaqByIdAsync(id);
+        if (faq == null)
+            return RedirectToAction("List");
+
+        var isFaqCategory = await _faqService.CheckIsFaqCategory(id);
+        if (isFaqCategory)
+        {
+            var faqCategoryModel = await _faqModelFactory.PrepareFaqCategoryModelAsync(null, faq);
+            faqCategoryModel.IsFaqCategory = true;
+            
+            return View(faqCategoryModel);
+        }
+    
+        var faqProductModel = await _faqModelFactory.PrepareFaqProductModelAsync(null, faq);
+    
+        return View(faqProductModel);
+    }
+    
     // [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
     // public virtual async Task<IActionResult> Edit(FaqModel model, bool continueEditing)
     // {

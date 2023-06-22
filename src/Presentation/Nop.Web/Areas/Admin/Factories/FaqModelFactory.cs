@@ -1,3 +1,4 @@
+using Nop.Core.Domain.FAQs;
 using Nop.Services.Catalog;
 using Nop.Services.FAQs;
 using Nop.Web.Areas.Admin.Models.FAQs;
@@ -78,50 +79,70 @@ public class FaqModelFactory : IFaqModelFactory
     
         return model;
     }
-    //
-    // public async Task<FaqModel> PrepareFaqModelAsync(FaqModel model, Faq faq)
-    // {
-    //     var categories = await _categoryService.GetAllCategoriesAsync(showHidden:true);
-    //     if (faq != null)
-    //     {
-    //         var categoriesIds = new List<int>();
-    //         foreach (var item in categories)
-    //         {
-    //             categoriesIds.Add(item.Id);
-    //         }
-    //     
-    //         var category = await _categoryService.GetCategoryByIdAsync(faq.CategoryId);
-    //     
-    //         model = new FaqModel()
-    //         {
-    //             Id                  = faq.Id,
-    //             QuestionTitle       = faq.QuestionTitle,
-    //             QuestionDescription = faq.QuestionDescription,
-    //             AnswerTitle         = faq.AnswerTitle,
-    //             AnswerDescription   = faq.AnswerDescription,
-    //             CategoryId          = faq.CategoryId,
-    //             CategoryName        = category.Name,
-    //             SelectedCategoryIds = categoriesIds
-    //         };
-    //     }
-    //
-    //     if (faq == null)
-    //     {
-    //         var genericCategory = categories.FirstOrDefault(c => c.Name == "Generic");
-    //         model.CategoryId   = genericCategory.Id;
-    //         model.CategoryName = genericCategory.Name;
-    //     }
-    //
-    //     await _baseAdminModelFactory.PrepareCategoriesAsync(model.AvailableCategories, false);
-    //     foreach (var categoryItem in model.AvailableCategories)
-    //     {
-    //         categoryItem.Selected = int.TryParse(categoryItem.Value, out var categoryId)
-    //                                 && model.SelectedCategoryIds.Contains(categoryId);
-    //     }  
-    //     
-    //     return model;
-    // }
-    //
+    
+    public async Task<FaqModel> PrepareFaqCategoryModelAsync(FaqModel model, Faq faq)
+    {
+        var categories = await _categoryService.GetAllCategoriesAsync(showHidden:true);
+        if (faq != null)
+        {
+            var categoriesIds = new List<int>();
+            foreach (var item in categories)
+            {
+                categoriesIds.Add(item.Id);
+            }
+        
+            var faqCategories = await _faqService.GetFaqCategoriesAsync(faq.Id);
+        
+            model = new FaqModel()
+            {
+                Id                  = faq.Id,
+                QuestionTitle       = faq.QuestionTitle,
+                QuestionDescription = faq.QuestionDescription,
+                AnswerTitle         = faq.AnswerTitle,
+                AnswerDescription   = faq.AnswerDescription,
+                CategoryIds         = faqCategories.Select(it => it.Id).ToList(),
+                CategoryName        = faqCategories.Select(it => it.Name).ToList(),
+                SelectedCategoryIds = categoriesIds
+            };
+        }
+    
+        if (faq == null)
+        {
+            var genericCategory = categories.Where(c => c.Name == "Generic").ToList();
+            model.CategoryIds  = genericCategory.Select(it => it.Id).ToList();
+            model.CategoryName = genericCategory.Select(it => it.Name).ToList();
+        }
+    
+        await _baseAdminModelFactory.PrepareCategoriesAsync(model.AvailableCategories, false);
+        foreach (var categoryItem in model.AvailableCategories)
+        {
+            categoryItem.Selected = int.TryParse(categoryItem.Value, out var categoryId)
+                                    && model.SelectedCategoryIds.Contains(categoryId);
+        }  
+        
+        return model;
+    }
+
+    public async Task<FaqModel> PrepareFaqProductModelAsync(FaqModel model, Faq faq)
+    {
+        if (faq != null)
+        {
+            var faqProducts = await _faqService.GetFaqProductsAsync(faq.Id);
+        
+            model = new FaqModel()
+            {
+                Id                  = faq.Id,
+                QuestionTitle       = faq.QuestionTitle,
+                QuestionDescription = faq.QuestionDescription,
+                AnswerTitle         = faq.AnswerTitle,
+                AnswerDescription   = faq.AnswerDescription,
+                ProductIds = faqProducts.Select(it => it.Id).ToList()
+            };
+        }  
+        
+        return model;
+    }
+
     // public async Task<FaqListModel> PrepareFaqProductListModelAsync(FaqSearchModel searchModel)
     // {
     //     if (searchModel == null)

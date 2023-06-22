@@ -54,6 +54,11 @@ public class FaqService : IFaqService
         return await _productService.GetProductsByIdsAsync(productIds);
     }
 
+    public async Task<bool> CheckIsFaqCategory(int id)
+    {
+        return _faqCategoryMappingRepository.Table.Any(it => it.FaqId == id);
+    }
+
     public async Task<List<Faq>> GetAllFaqsAsync(List<int> categoryIds)
     {
         if (categoryIds.Any())
@@ -67,12 +72,12 @@ public class FaqService : IFaqService
         }
         return await _faqRepository.Table.ToListAsync();
     }
-    //
-    // public async Task<Faq> GetFaqByIdAsync(int id)
-    // {
-    //     return await _faqRepository.GetByIdAsync(id);
-    // }
-    //
+    
+    public async Task<Faq> GetFaqByIdAsync(int id)
+    {
+        return await _faqRepository.GetByIdAsync(id);
+    }
+    
     // public async Task UpdateFaqAsync(Faq faq)
     // {
     //     await _faqRepository.UpdateAsync(faq);

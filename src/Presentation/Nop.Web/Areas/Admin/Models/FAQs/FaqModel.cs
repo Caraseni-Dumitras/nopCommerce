@@ -33,6 +33,8 @@ public record FaqModel : BaseNopEntityModel
     
     public IList<SelectListItem> AvailableCategories { get; set; }
     public int                   ProductId           { get; set; }
+    public List<int>             ProductIds          { get; set; }
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.ProductName")]
-    public List<string>                ProductName         { get; set; }
+    public List<string> ProductName { get; set; }
+    public bool IsFaqCategory { get; set; } = false;
 }
