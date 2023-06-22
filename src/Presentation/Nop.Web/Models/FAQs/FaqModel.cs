@@ -13,8 +13,4 @@ public record FaqModel : BaseNopEntityModel
     public string AnswerTitle         { get; set; }
     [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.AnswerDescription")]
     public string AnswerDescription   { get; set; }
-    [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.CategoryId")]
-    public int    CategoryId          { get; set; }
-    [NopResourceDisplayName("Admin.ContentManagement.FAQ.Fields.CategoryName")]
-    public string CategoryName { get; set; }
 }

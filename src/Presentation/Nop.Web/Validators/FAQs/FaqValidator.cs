@@ -21,8 +21,5 @@ public class FaqValidator : BaseNopValidator<FaqModel>
         
         RuleFor(f => f.AnswerDescription)
             .NotEmpty();
-        
-        RuleFor(f => f.CategoryId)
-            .GreaterThan(0);
     }
 }
