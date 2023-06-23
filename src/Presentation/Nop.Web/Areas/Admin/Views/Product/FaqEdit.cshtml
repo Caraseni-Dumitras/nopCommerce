@@ -1,0 +1,31 @@
+@model FaqModel
+
+@using Nop.Web.Areas.Admin.Models.FAQs
+
+@{
+    ViewBag.PageTitle = T("Admin.ContentManagement.FAQ.EditFaqDetails").Text;
+    NopHtml.SetActiveMenuItemSystemName("Faqs");
+}
+
+<form asp-controller="Product" asp-action="FaqEdit" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="Edit" asp-route-id="@Model.ProductId">Back to product</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+            @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.TopicDetailsButtons, additionalData = Model })
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdateFaqDetails", Model)
+</form>

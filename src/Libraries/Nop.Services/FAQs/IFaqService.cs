@@ -25,4 +25,5 @@ public interface IFaqService
     Task                            DeleteFaqProductAsync(FaqProductMapping        faqProductMapping);
     Task                            DeleteFaqProductsAsync(int                     id);
     Task                            DeleteFaqCategoriesAsync(int                   id);
+    Task<int>                       GetProductIdByFaqId(int                        id);
 }

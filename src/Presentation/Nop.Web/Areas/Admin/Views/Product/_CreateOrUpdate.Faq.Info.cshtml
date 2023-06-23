@@ -30,7 +30,7 @@
                            },
                            new ColumnProperty(nameof(FaqModel.ProductName))
                            {
-                               Title = T("Admin.ContentManagement.FAQ.Fields.CategoryName").Text, 
+                               Title = T("Admin.ContentManagement.FAQ.Fields.ProductName").Text, 
                                Width = "50"
                            },
                            new ColumnProperty(nameof(FaqModel.CreatedOnUtc))
@@ -50,7 +50,7 @@
                                Title = T("Admin.Common.Edit").Text, 
                                Width = "50", 
                                ClassName = NopColumnClassDefaults.Button,
-                               Render = new RenderButtonEdit(new DataUrl("~/Admin/Faq/Edit/"))
+                               Render = new RenderButtonEdit(new DataUrl("~/Admin/Product/FaqEdit/"))
                            }
                        }
                    })

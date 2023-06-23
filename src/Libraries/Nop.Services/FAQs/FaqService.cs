@@ -118,6 +118,11 @@ public class FaqService : IFaqService
         await _faqCategoryMappingRepository.DeleteAsync(entities, false);
     }
 
+    public async Task<int> GetProductIdByFaqId(int id)
+    {
+        return _faqProductMappingRepository.Table.Where(it => it.FaqId == id).Select(it => it.ProductId).FirstOrDefault();
+    }
+
     public async Task DeleteFaqProductsAsync(int id)
     {
         var entities = await GetAllFaqProductEntitiesByFaqIdAsync(id);
@@ -134,7 +139,7 @@ public class FaqService : IFaqService
                 entities.AddRange(await GetAllFaqByCategoryIdAsync(categoryId));
             }
 
-            return entities;
+            return entities.DistinctBy(it => it.Id).ToList();
         }
 
         return await _faqRepository.Table.ToListAsync();

@@ -3832,7 +3832,56 @@ namespace Nop.Web.Areas.Admin.Controllers
         
             }
             
-            return RedirectToAction("Edit", new{id = model.ProductId});
+            if (!continueEditing)
+                return RedirectToAction("Edit", new{id = model.ProductId});
+
+            return RedirectToAction("FaqEdit", new { id = faq.Id });
+        } 
+        public virtual async Task<IActionResult> FaqEdit(int id)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
+                return AccessDeniedView();
+
+            var faq = await _faqService.GetFaqByIdAsync(id);
+            if (faq == null)
+                return RedirectToAction("List");
+
+            var faqProductModel = await _faqModelFactory.PrepareFaqProductModelAsync(null, faq);
+
+            var productId = await _faqService.GetProductIdByFaqId(faq.Id);
+            faqProductModel.ProductId = productId;
+
+            return View(faqProductModel);
+        }
+
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public virtual async Task<IActionResult> FaqEdit(FaqModel model, bool continueEditing)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageFaq))
+                return AccessDeniedView();
+
+            var faq = await _faqService.GetFaqByIdAsync(model.Id);
+            if (faq == null)
+            return RedirectToAction("List");
+
+            if (ModelState.IsValid)
+            {
+                faq.QuestionTitle       = model.QuestionTitle;
+                faq.QuestionDescription = model.QuestionDescription;
+                faq.AnswerTitle         = model.AnswerTitle;
+                faq.AnswerDescription   = model.AnswerDescription;
+
+                await _faqService.UpdateFaqAsync(faq);
+
+                if (!continueEditing)
+                    return RedirectToAction("Edit", new{id = model.ProductId});
+                
+                model = await _faqModelFactory.PrepareFaqProductModelAsync(model, faq);
+
+                return RedirectToAction("FaqEdit", new { id = faq.Id });
+            }
+
+            return View(model);
         }
 
         #endregion
