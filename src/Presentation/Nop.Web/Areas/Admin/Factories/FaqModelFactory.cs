@@ -37,6 +37,8 @@ public class FaqModelFactory : IFaqModelFactory
         if (searchModel == null)
             throw new ArgumentNullException(nameof(searchModel));
 
+        var faqs = new List<Faq>();
+        
         var categoryIds = new List<int>();
         if (searchModel.SearchCategoryId > 0)
         {
@@ -50,7 +52,7 @@ public class FaqModelFactory : IFaqModelFactory
             }
         }
 
-        var faqs = await _faqService.GetAllFaqsAsync(categoryIds);
+        faqs.AddRange(await _faqService.GetAllFaqsAsync(categoryIds ,searchModel.SearchProductName));
 
         var pagedFaqs = faqs.ToPagedList(searchModel);
 

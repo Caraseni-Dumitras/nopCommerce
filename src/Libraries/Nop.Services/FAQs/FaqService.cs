@@ -1,4 +1,5 @@
 using LinqToDB;
+using Microsoft.IdentityModel.Tokens;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.FAQs;
 using Nop.Data;
@@ -123,22 +124,60 @@ public class FaqService : IFaqService
         return _faqProductMappingRepository.Table.Where(it => it.FaqId == id).Select(it => it.ProductId).FirstOrDefault();
     }
 
+    public async Task<List<Faq>> GetAllFaqsByProductNameAsync(string productName)
+    {
+        var products   = await _productService.SearchProductsAsync(keywords: productName);
+        var productIds = products.Select(it => it.Id).ToList();
+
+        return await GetAllFaqByProductsIdsAsync(productIds);
+    }
+
+    public async Task<List<Faq>> GetAllFaqByProductsIdsAsync(ICollection<int> productIds)
+    {
+        var faqIds = await _faqProductMappingRepository.Table.Where(it => productIds.Contains(it.ProductId)).Select(it => it.FaqId).ToListAsync();
+        return await GetAllFaqsByIdsAsync(faqIds);
+    }
+
+    public async Task<List<Faq>> GetAllFaqsByIdsAsync(ICollection<int> faqIds)
+    {
+        var test = await _faqRepository.Table.Where(it => faqIds.Contains(it.Id)).ToListAsync();
+        return test;
+    }
+
+    public async Task<List<Faq>> GetAllFaqsByCategoryIdsAsync(ICollection<int> categoryIds)
+    {
+        var faqIds = await _faqCategoryMappingRepository.Table.Where(it => categoryIds.Contains(it.CategoryId)).Select(it => it.FaqId).Distinct().ToListAsync();
+        return await GetAllFaqsByIdsAsync(faqIds);
+    }
+
     public async Task DeleteFaqProductsAsync(int id)
     {
         var entities = await GetAllFaqProductEntitiesByFaqIdAsync(id);
         await _faqProductMappingRepository.DeleteAsync(entities, false);
     }
 
-    public async Task<List<Faq>> GetAllFaqsAsync(List<int> categoryIds)
+    public async Task<List<Faq>> GetAllFaqsAsync(List<int> categoryIds, string productName = "")
     {
+        var entities = new List<Faq>();
         if (categoryIds.Any())
         {
-            var entities = new List<Faq>();
+            
+            if (!productName.IsNullOrEmpty())
+            {
+               entities.AddRange(await GetAllFaqsByProductNameAsync(productName));
+            }
+            
             foreach (var categoryId in categoryIds)
             {
                 entities.AddRange(await GetAllFaqByCategoryIdAsync(categoryId));
             }
 
+            return entities.DistinctBy(it => it.Id).ToList();
+        }
+        
+        if (!productName.IsNullOrEmpty())
+        {
+            entities.AddRange(await GetAllFaqsByProductNameAsync(productName));
             return entities.DistinctBy(it => it.Id).ToList();
         }
 
