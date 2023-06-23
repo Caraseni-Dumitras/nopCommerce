@@ -172,16 +172,16 @@ public class FaqService : IFaqService
                 entities.AddRange(await GetAllFaqByCategoryIdAsync(categoryId));
             }
 
-            return entities.DistinctBy(it => it.Id).ToList();
+            return entities.OrderBy(it => it.UpdatedOnUtc).DistinctBy(it => it.Id).ToList();
         }
         
         if (!productName.IsNullOrEmpty())
         {
             entities.AddRange(await GetAllFaqsByProductNameAsync(productName));
-            return entities.DistinctBy(it => it.Id).ToList();
+            return entities.OrderBy(it => it.UpdatedOnUtc).DistinctBy(it => it.Id).ToList();
         }
 
-        return await _faqRepository.Table.ToListAsync();
+        return await _faqRepository.Table.OrderByDescending(it => it.UpdatedOnUtc).ToListAsync();
     }
 
     public async Task<Faq> GetFaqByIdAsync(int id)
