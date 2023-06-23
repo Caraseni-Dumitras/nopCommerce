@@ -28,6 +28,7 @@ using Nop.Services.Stores;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Areas.Admin.Models.Common;
+using Nop.Web.Areas.Admin.Models.FAQs;
 using Nop.Web.Areas.Admin.Models.Orders;
 using Nop.Web.Framework.Extensions;
 using Nop.Web.Framework.Factories;
@@ -42,129 +43,131 @@ namespace Nop.Web.Areas.Admin.Factories
     {
         #region Fields
 
-        protected readonly CatalogSettings _catalogSettings;
-        protected readonly CurrencySettings _currencySettings;
-        protected readonly IAclSupportedModelFactory _aclSupportedModelFactory;
-        protected readonly IAddressService _addressService;
-        protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
-        protected readonly ICategoryService _categoryService;
-        protected readonly ICurrencyService _currencyService;
-        protected readonly ICustomerService _customerService;
-        protected readonly IDateTimeHelper _dateTimeHelper;
-        protected readonly IDiscountService _discountService;
-        protected readonly IDiscountSupportedModelFactory _discountSupportedModelFactory;
-        protected readonly ILocalizationService _localizationService;
-        protected readonly ILocalizedModelFactory _localizedModelFactory;
-        protected readonly IManufacturerService _manufacturerService;
-        protected readonly IMeasureService _measureService;
-        protected readonly IOrderService _orderService;
-        protected readonly IPictureService _pictureService;
-        protected readonly IProductAttributeFormatter _productAttributeFormatter;
-        protected readonly IProductAttributeParser _productAttributeParser;
-        protected readonly IProductAttributeService _productAttributeService;
-        protected readonly IProductService _productService;
-        protected readonly IProductTagService _productTagService;
-        protected readonly IProductTemplateService _productTemplateService;
-        protected readonly ISettingModelFactory _settingModelFactory;
-        protected readonly ISettingService _settingService;
-        protected readonly IShipmentService _shipmentService;
-        protected readonly IShippingService _shippingService;
-        protected readonly IShoppingCartService _shoppingCartService;
-        protected readonly ISpecificationAttributeService _specificationAttributeService;
+        protected readonly CatalogSettings                    _catalogSettings;
+        protected readonly CurrencySettings                   _currencySettings;
+        protected readonly IAclSupportedModelFactory          _aclSupportedModelFactory;
+        protected readonly IAddressService                    _addressService;
+        protected readonly IBaseAdminModelFactory             _baseAdminModelFactory;
+        protected readonly ICategoryService                   _categoryService;
+        protected readonly ICurrencyService                   _currencyService;
+        protected readonly ICustomerService                   _customerService;
+        protected readonly IDateTimeHelper                    _dateTimeHelper;
+        protected readonly IDiscountService                   _discountService;
+        protected readonly IDiscountSupportedModelFactory     _discountSupportedModelFactory;
+        protected readonly ILocalizationService               _localizationService;
+        protected readonly ILocalizedModelFactory             _localizedModelFactory;
+        protected readonly IManufacturerService               _manufacturerService;
+        protected readonly IMeasureService                    _measureService;
+        protected readonly IOrderService                      _orderService;
+        protected readonly IPictureService                    _pictureService;
+        protected readonly IProductAttributeFormatter         _productAttributeFormatter;
+        protected readonly IProductAttributeParser            _productAttributeParser;
+        protected readonly IProductAttributeService           _productAttributeService;
+        protected readonly IProductService                    _productService;
+        protected readonly IProductTagService                 _productTagService;
+        protected readonly IProductTemplateService            _productTemplateService;
+        protected readonly ISettingModelFactory               _settingModelFactory;
+        protected readonly ISettingService                    _settingService;
+        protected readonly IShipmentService                   _shipmentService;
+        protected readonly IShippingService                   _shippingService;
+        protected readonly IShoppingCartService               _shoppingCartService;
+        protected readonly ISpecificationAttributeService     _specificationAttributeService;
         protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
-        protected readonly IStoreContext _storeContext;
-        protected readonly IStoreService _storeService;
-        protected readonly IUrlRecordService _urlRecordService;
-        protected readonly IVideoService _videoService;
-        protected readonly IWorkContext _workContext;
-        protected readonly MeasureSettings _measureSettings;
-        protected readonly NopHttpClient _nopHttpClient;
-        protected readonly TaxSettings _taxSettings;
-        protected readonly VendorSettings _vendorSettings;
+        protected readonly IStoreContext                      _storeContext;
+        protected readonly IStoreService                      _storeService;
+        protected readonly IUrlRecordService                  _urlRecordService;
+        protected readonly IVideoService                      _videoService;
+        protected readonly IWorkContext                       _workContext;
+        protected readonly MeasureSettings                    _measureSettings;
+        protected readonly NopHttpClient                      _nopHttpClient;
+        protected readonly TaxSettings                        _taxSettings;
+        protected readonly VendorSettings                     _vendorSettings;
+        protected readonly IFaqModelFactory                   _faqModelFactory;
 
         #endregion
 
         #region Ctor
 
         public ProductModelFactory(CatalogSettings catalogSettings,
-            CurrencySettings currencySettings,
-            IAclSupportedModelFactory aclSupportedModelFactory,
-            IAddressService addressService,
-            IBaseAdminModelFactory baseAdminModelFactory,
-            ICategoryService categoryService,
-            ICurrencyService currencyService,
-            ICustomerService customerService,
-            IDateTimeHelper dateTimeHelper,
-            IDiscountService discountService,
-            IDiscountSupportedModelFactory discountSupportedModelFactory,
-            ILocalizationService localizationService,
-            ILocalizedModelFactory localizedModelFactory,
-            IManufacturerService manufacturerService,
-            IMeasureService measureService,
-            IOrderService orderService,
-            IPictureService pictureService,
-            IProductAttributeFormatter productAttributeFormatter,
-            IProductAttributeParser productAttributeParser,
-            IProductAttributeService productAttributeService,
-            IProductService productService,
-            IProductTagService productTagService,
-            IProductTemplateService productTemplateService,
-            ISettingModelFactory settingModelFactory,
-            ISettingService settingService,
-            IShipmentService shipmentService,
-            IShippingService shippingService,
-            IShoppingCartService shoppingCartService,
-            ISpecificationAttributeService specificationAttributeService,
-            IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
-            IStoreContext storeContext,
-            IStoreService storeService,
-            IUrlRecordService urlRecordService,
-            IVideoService videoService,
-            IWorkContext workContext,
-            MeasureSettings measureSettings,
-            NopHttpClient nopHttpClient,
-            TaxSettings taxSettings,
-            VendorSettings vendorSettings)
+            CurrencySettings                       currencySettings,
+            IAclSupportedModelFactory              aclSupportedModelFactory,
+            IAddressService                        addressService,
+            IBaseAdminModelFactory                 baseAdminModelFactory,
+            ICategoryService                       categoryService,
+            ICurrencyService                       currencyService,
+            ICustomerService                       customerService,
+            IDateTimeHelper                        dateTimeHelper,
+            IDiscountService                       discountService,
+            IDiscountSupportedModelFactory         discountSupportedModelFactory,
+            ILocalizationService                   localizationService,
+            ILocalizedModelFactory                 localizedModelFactory,
+            IManufacturerService                   manufacturerService,
+            IMeasureService                        measureService,
+            IOrderService                          orderService,
+            IPictureService                        pictureService,
+            IProductAttributeFormatter             productAttributeFormatter,
+            IProductAttributeParser                productAttributeParser,
+            IProductAttributeService               productAttributeService,
+            IProductService                        productService,
+            IProductTagService                     productTagService,
+            IProductTemplateService                productTemplateService,
+            ISettingModelFactory                   settingModelFactory,
+            ISettingService                        settingService,
+            IShipmentService                       shipmentService,
+            IShippingService                       shippingService,
+            IShoppingCartService                   shoppingCartService,
+            ISpecificationAttributeService         specificationAttributeService,
+            IStoreMappingSupportedModelFactory     storeMappingSupportedModelFactory,
+            IStoreContext                          storeContext,
+            IStoreService                          storeService,
+            IUrlRecordService                      urlRecordService,
+            IVideoService                          videoService,
+            IWorkContext                           workContext,
+            MeasureSettings                        measureSettings,
+            NopHttpClient                          nopHttpClient,
+            TaxSettings                            taxSettings,
+            VendorSettings                         vendorSettings, IFaqModelFactory faqModelFactory)
         {
-            _catalogSettings = catalogSettings;
-            _currencySettings = currencySettings;
-            _aclSupportedModelFactory = aclSupportedModelFactory;
-            _addressService = addressService;
-            _baseAdminModelFactory = baseAdminModelFactory;
-            _categoryService = categoryService;
-            _currencyService = currencyService;
-            _customerService = customerService;
-            _dateTimeHelper = dateTimeHelper;
-            _discountService = discountService;
-            _discountSupportedModelFactory = discountSupportedModelFactory;
-            _localizationService = localizationService;
-            _localizedModelFactory = localizedModelFactory;
-            _manufacturerService = manufacturerService;
-            _measureService = measureService;
-            _orderService = orderService;
-            _pictureService = pictureService;
-            _productAttributeFormatter = productAttributeFormatter;
-            _productAttributeParser = productAttributeParser;
-            _productAttributeService = productAttributeService;
-            _productService = productService;
-            _productTagService = productTagService;
-            _productTemplateService = productTemplateService;
-            _settingModelFactory = settingModelFactory;
-            _settingService = settingService;
-            _shipmentService = shipmentService;
-            _shippingService = shippingService;
-            _shoppingCartService = shoppingCartService;
-            _specificationAttributeService = specificationAttributeService;
+            _catalogSettings                   = catalogSettings;
+            _currencySettings                  = currencySettings;
+            _aclSupportedModelFactory          = aclSupportedModelFactory;
+            _addressService                    = addressService;
+            _baseAdminModelFactory             = baseAdminModelFactory;
+            _categoryService                   = categoryService;
+            _currencyService                   = currencyService;
+            _customerService                   = customerService;
+            _dateTimeHelper                    = dateTimeHelper;
+            _discountService                   = discountService;
+            _discountSupportedModelFactory     = discountSupportedModelFactory;
+            _localizationService               = localizationService;
+            _localizedModelFactory             = localizedModelFactory;
+            _manufacturerService               = manufacturerService;
+            _measureService                    = measureService;
+            _orderService                      = orderService;
+            _pictureService                    = pictureService;
+            _productAttributeFormatter         = productAttributeFormatter;
+            _productAttributeParser            = productAttributeParser;
+            _productAttributeService           = productAttributeService;
+            _productService                    = productService;
+            _productTagService                 = productTagService;
+            _productTemplateService            = productTemplateService;
+            _settingModelFactory               = settingModelFactory;
+            _settingService                    = settingService;
+            _shipmentService                   = shipmentService;
+            _shippingService                   = shippingService;
+            _shoppingCartService               = shoppingCartService;
+            _specificationAttributeService     = specificationAttributeService;
             _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
-            _storeContext = storeContext;
-            _storeService = storeService;
-            _urlRecordService = urlRecordService;
-            _videoService = videoService;
-            _workContext = workContext;
-            _measureSettings = measureSettings;
-            _nopHttpClient = nopHttpClient;
-            _taxSettings = taxSettings;
-            _vendorSettings = vendorSettings;
+            _storeContext                      = storeContext;
+            _storeService                      = storeService;
+            _urlRecordService                  = urlRecordService;
+            _videoService                      = videoService;
+            _workContext                       = workContext;
+            _measureSettings                   = measureSettings;
+            _nopHttpClient                     = nopHttpClient;
+            _taxSettings                       = taxSettings;
+            _vendorSettings                    = vendorSettings;
+            _faqModelFactory              = faqModelFactory;
         }
 
         #endregion
@@ -873,6 +876,7 @@ namespace Nop.Web.Areas.Admin.Factories
                 await PrepareStockQuantityHistorySearchModelAsync(model.StockQuantityHistorySearchModel, product);
                 PrepareProductAttributeMappingSearchModel(model.ProductAttributeMappingSearchModel, product);
                 PrepareProductAttributeCombinationSearchModel(model.ProductAttributeCombinationSearchModel, product);
+                model.FaqSearchModel = await _faqModelFactory.PrepareFaqSearchModelAsync(new FaqSearchModel());
 
                 //define localized model configuration action
                 localizedModelConfiguration = async (locale, languageId) =>
