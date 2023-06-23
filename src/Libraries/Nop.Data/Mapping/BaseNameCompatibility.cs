@@ -42,7 +42,8 @@ namespace Nop.Data.Mapping
             { typeof(PrivateMessage), "Forums_PrivateMessage" },
             { typeof(NewsItem), "News" },
             { typeof(Faq), "faq" },
-            { typeof(FaqProductMapping), "faq_product_mapping" }
+            { typeof(FaqProductMapping), "Faq_Product_Mapping" },
+            { typeof(FaqCategoryMapping), "Faq_Category_Mapping" }
         };
 
         public Dictionary<(Type, string), string> ColumnName => new()
@@ -74,7 +75,8 @@ namespace Nop.Data.Mapping
             { (typeof(Faq), "QuestionDescription"), "question_description"},
             { (typeof(Faq), "AnswerTitle"), "answer_title"},
             { (typeof(Faq), "AnswerDescription"), "answer_description"},
-            { (typeof(Faq), "CategoryId"), "category_id"},
+            { (typeof(Faq), "CreatedOnUtc"), "created_on_utc"},
+            { (typeof(Faq), "UpdatedOnUtc"), "updated_on_utc"},
         };
     }
 }

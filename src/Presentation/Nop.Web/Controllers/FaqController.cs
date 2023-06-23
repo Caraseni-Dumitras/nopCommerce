@@ -6,9 +6,9 @@ namespace Nop.Web.Controllers;
 [AutoValidateAntiforgeryToken]
 public class FaqController : BasePublicController
 {
-    public virtual IActionResult Index(int categoryId = 0, string categoryName = "Generic")
+    public virtual IActionResult Index()
     {
-        var model = new FaqModel() { CategoryId = categoryId , CategoryName = categoryName};
+        var model = new FaqModel();
         return View("~/Views/FAQS/Index.cshtml", model);
     }
 }

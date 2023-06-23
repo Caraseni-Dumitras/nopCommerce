@@ -8,6 +8,7 @@
 }
 
 <form asp-controller="Faq" asp-action="Edit" method="post">
+    <input asp-for="IsFaqCategory" type="hidden" />
     <div class="content-header clearfix">
         <h1 class="float-left">
             <small>
@@ -31,6 +32,28 @@
             @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.TopicDetailsButtons, additionalData = Model })
         </div>
     </div>
-    @await Html.PartialAsync("_CreateOrUpdateFaq", Model)
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.ForumGroupDetailsTop, additionalData = Model })
+                    <div class="card card-default">
+                        <div class="card-body">
+                            @if (Model.IsFaqCategory)
+                            {
+                                @await Html.PartialAsync("_CreateOrUpdateFaqCategory", Model)
+                            }
+                            else
+                            {
+                                @await Html.PartialAsync("_CreateOrUpdateFaqProduct", Model)
+                            }
+                            @await Html.PartialAsync("_CreateOrUpdate", Model)
+                        </div>
+                    </div>
+                    @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.ForumGroupDetailsBottom, additionalData = Model })
+                </div>
+            </div>
+        </div>
+    </section>
 </form>
 <nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="faq-delete" />
